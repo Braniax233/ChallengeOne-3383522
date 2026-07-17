@@ -93,16 +93,13 @@ export default function App() {
 
   return (
     <>
-      <Draggable nodeRef={nodeRef} bounds="body">
-        <button 
-          ref={nodeRef}
-          onClick={() => setDarkMode(d => !d)}
-          className="fixed bottom-6 right-6 z-50 w-12 h-12 bg-teal-600 rounded-full shadow-lg flex items-center justify-center transition-colors hover:bg-teal-700 hover:scale-105 active:scale-95 border-2 border-white/20 dark-toggle-btn cursor-move"
-          title="Drag me!"
-        >
-          {darkMode ? <Sun size={20} className="text-white dark-toggle-icon" /> : <Moon size={20} className="text-white dark-toggle-icon" />}
-        </button>
-      </Draggable>
+      <button 
+        onClick={() => setDarkMode(d => !d)}
+        className="fixed bottom-6 right-6 z-50 w-12 h-12 bg-teal-600 rounded-full shadow-lg flex items-center justify-center transition-colors hover:bg-teal-700 hover:scale-105 active:scale-95 border-2 border-white/20 dark-toggle-btn"
+        title="Toggle Dark Mode"
+      >
+        {darkMode ? <Sun size={20} className="text-amber-300" /> : <Moon size={20} className="text-white" />}
+      </button>
 
     <Routes>
       {/* ── Login page ────────────────────────────────────────────────────── */}
