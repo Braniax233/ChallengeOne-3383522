@@ -121,16 +121,16 @@ export default function ProviderDashboard() {
           </div>
           <div className="mt-3 flex flex-wrap items-center gap-4 sm:gap-8">
             <div>
-              <p className="text-xs text-ink-500">Heart Rate</p>
-              <p className="text-2xl font-bold text-ink-900">{liveData.heartRate} <span className="text-sm font-normal text-ink-400">bpm</span></p>
+              <p className="text-xs text-ink-500 dark:text-gray-400">Heart Rate</p>
+              <p className="text-2xl font-bold text-ink-900 dark:text-gray-100 ">{liveData.heartRate} <span className="text-sm font-normal text-ink-400">bpm</span></p>
             </div>
             <div>
-              <p className="text-xs text-ink-500">SpO₂</p>
-              <p className="text-2xl font-bold text-ink-900">{liveData.spo2}<span className="text-sm font-normal text-ink-400">%</span></p>
+              <p className="text-xs text-ink-500 dark:text-gray-400">SpO₂</p>
+              <p className="text-2xl font-bold text-ink-900 dark:text-gray-100 ">{liveData.spo2}<span className="text-sm font-normal text-ink-400">%</span></p>
             </div>
             <div className="ml-auto text-right">
               <p className="text-xs text-ink-400">Last update</p>
-              <p className="text-xs font-mono text-ink-600">Just now</p>
+              <p className="text-xs font-mono text-ink-600 dark:text-gray-300">Just now</p>
               <button onClick={() => navigate('/provider/capture')}
                 className="mt-2 text-xs text-teal-600 hover:text-teal-700 font-semibold flex items-center gap-1 ml-auto">
                 Link to patient <ArrowRight size={11} />
@@ -151,8 +151,8 @@ export default function ProviderDashboard() {
             <div className={`w-9 h-9 rounded-xl ${bg} flex items-center justify-center mb-3`}>
               <Icon size={18} className={color} />
             </div>
-            <p className="text-2xl font-bold text-ink-900">{value}</p>
-            <p className="text-xs text-ink-500 mt-0.5">{label}</p>
+            <p className="text-2xl font-bold text-ink-900 dark:text-gray-100 ">{value}</p>
+            <p className="text-xs text-ink-500 dark:text-gray-400 mt-0.5">{label}</p>
           </div>
         ))}
       </div>
@@ -164,8 +164,8 @@ export default function ProviderDashboard() {
           <div className="w-10 h-10 rounded-xl bg-teal-50 flex items-center justify-center mb-3 group-hover:bg-teal-100 transition-colors">
             <Camera size={20} className="text-teal-600" />
           </div>
-          <h3 className="text-sm font-bold text-ink-900 mb-1">Capture New Reading</h3>
-          <p className="text-xs text-ink-500">Identify patient and record SpO₂ & HR from device</p>
+          <h3 className="text-sm font-bold text-ink-900 dark:text-gray-100 mb-1">Capture New Reading</h3>
+          <p className="text-xs text-ink-500 dark:text-gray-400">Identify patient and record SpO₂ & HR from device</p>
           <div className="flex items-center gap-1 mt-3 text-teal-500 text-xs font-semibold">
             Start now <ArrowRight size={12} />
           </div>
@@ -174,11 +174,11 @@ export default function ProviderDashboard() {
         <button onClick={() => navigate('/provider/patients')}
           className="vx-card p-6 text-left hover:border-teal-300 transition-colors group">
           <div className="w-10 h-10 rounded-xl bg-ink-50 flex items-center justify-center mb-3 group-hover:bg-ink-100 transition-colors">
-            <Users size={20} className="text-ink-600" />
+            <Users size={20} className="text-ink-600 dark:text-gray-300" />
           </div>
-          <h3 className="text-sm font-bold text-ink-900 mb-1">Find Patient</h3>
-          <p className="text-xs text-ink-500">Search by name or membership ID</p>
-          <div className="flex items-center gap-1 mt-3 text-ink-500 text-xs font-semibold">
+          <h3 className="text-sm font-bold text-ink-900 dark:text-gray-100 mb-1">Find Patient</h3>
+          <p className="text-xs text-ink-500 dark:text-gray-400">Search by name or membership ID</p>
+          <div className="flex items-center gap-1 mt-3 text-ink-500 dark:text-gray-400 text-xs font-semibold">
             Browse records <ArrowRight size={12} />
           </div>
         </button>
@@ -188,7 +188,7 @@ export default function ProviderDashboard() {
       <div className="vx-card">
         <div className="px-6 py-4 border-b border-ink-100 flex items-center justify-between">
           <div>
-            <h3 className="text-sm font-bold text-ink-900">Today's Activity</h3>
+            <h3 className="text-sm font-bold text-ink-900 dark:text-gray-100 ">Today's Activity</h3>
             <p className="text-xs text-ink-400 mt-0.5">{activity.length} reading{activity.length !== 1 ? 's' : ''} captured</p>
           </div>
           <div className="flex items-center gap-1.5 text-xs text-ink-400">
@@ -204,10 +204,10 @@ export default function ProviderDashboard() {
               <div key={item.id} className="px-6 py-4 flex items-center gap-4 hover:bg-ink-50/40 transition-colors">
                 <div className={`w-2.5 h-2.5 rounded-full flex-shrink-0 ${STATUS_DOT[status] ?? 'bg-ink-300'}`} />
                 <div className="flex-1 min-w-0">
-                  <p className="text-sm font-semibold text-ink-800 truncate">{item.patient}</p>
+                  <p className="text-sm font-semibold text-ink-800 dark:text-gray-200 truncate">{item.patient}</p>
                   <p className="text-xs text-ink-400 font-mono">{item.memberId}</p>
                 </div>
-                <div className="text-xs text-ink-600 hidden sm:flex items-center gap-4">
+                <div className="text-xs text-ink-600 dark:text-gray-300 hidden sm:flex items-center gap-4">
                   <span>HR: <strong>{item.hr}</strong></span>
                   <span>SpO₂: <strong>{item.spo2}%</strong></span>
                 </div>
@@ -228,7 +228,7 @@ export default function ProviderDashboard() {
           {activity.length === 0 && (
             <div className="px-6 py-12 text-center">
               <Camera size={32} className="text-ink-200 mx-auto mb-3" />
-              <p className="text-sm font-medium text-ink-500">No readings captured today</p>
+              <p className="text-sm font-medium text-ink-500 dark:text-gray-400">No readings captured today</p>
               <button onClick={() => navigate('/provider/capture')}
                 className="mt-3 text-xs text-teal-500 hover:text-teal-600 font-medium">
                 Capture first reading →

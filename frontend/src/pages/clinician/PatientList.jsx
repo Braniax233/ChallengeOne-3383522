@@ -119,9 +119,9 @@ function AddPatientModal({ onClose, onAdded }) {
 
   return (
     <div className="fixed inset-0 bg-black/30 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-      <div className="bg-white rounded-2xl shadow-card-hover w-full max-w-md animate-fade-in">
+      <div className="bg-white dark:bg-ink-800 rounded-2xl shadow-card-hover w-full max-w-md animate-fade-in">
         <div className="flex items-center justify-between px-5 py-4 border-b border-ink-100">
-          <h3 className="text-sm font-bold text-ink-900">Add New Patient</h3>
+          <h3 className="text-sm font-bold text-ink-900 dark:text-gray-100 ">Add New Patient</h3>
           <button onClick={onClose} className="icon-btn w-7 h-7">
             <X size={16} />
           </button>
@@ -129,32 +129,32 @@ function AddPatientModal({ onClose, onAdded }) {
         <form onSubmit={handleSubmit} className="p-5 space-y-3">
           <div className="grid grid-cols-2 gap-3">
             <div className="col-span-2">
-              <label className="block text-xs font-medium text-ink-600 mb-1">Full Name *</label>
+              <label className="block text-xs font-medium text-ink-600 dark:text-gray-300 mb-1">Full Name *</label>
               <input value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })}
                 className={inputCls} placeholder="Jane Smith" />
             </div>
             <div>
-              <label className="block text-xs font-medium text-ink-600 mb-1">Email *</label>
+              <label className="block text-xs font-medium text-ink-600 dark:text-gray-300 mb-1">Email *</label>
               <input type="email" value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })}
                 className={inputCls} placeholder="patient@email.com" />
             </div>
             <div>
-              <label className="block text-xs font-medium text-ink-600 mb-1">Phone</label>
+              <label className="block text-xs font-medium text-ink-600 dark:text-gray-300 mb-1">Phone</label>
               <input value={form.phone} onChange={(e) => setForm({ ...form, phone: e.target.value })}
                 className={inputCls} placeholder="+1 234 567 8900" />
             </div>
             <div>
-              <label className="block text-xs font-medium text-ink-600 mb-1">Membership ID</label>
+              <label className="block text-xs font-medium text-ink-600 dark:text-gray-300 mb-1">Membership ID</label>
               <input value={form.memberId} onChange={(e) => setForm({ ...form, memberId: e.target.value })}
                 className={inputCls} placeholder="VX-009" />
             </div>
             <div>
-              <label className="block text-xs font-medium text-ink-600 mb-1">Age</label>
+              <label className="block text-xs font-medium text-ink-600 dark:text-gray-300 mb-1">Age</label>
               <input type="number" value={form.age} onChange={(e) => setForm({ ...form, age: e.target.value })}
                 className={inputCls} placeholder="35" min="1" max="120" />
             </div>
             <div className="col-span-2">
-              <label className="block text-xs font-medium text-ink-600 mb-1">Gender</label>
+              <label className="block text-xs font-medium text-ink-600 dark:text-gray-300 mb-1">Gender</label>
               <select value={form.gender} onChange={(e) => setForm({ ...form, gender: e.target.value })}
                 className={inputCls}>
                 <option>Male</option>
@@ -172,7 +172,7 @@ function AddPatientModal({ onClose, onAdded }) {
 
           <div className="flex gap-3 pt-1">
             <button type="button" onClick={onClose}
-              className="flex-1 py-2 rounded-xl border border-ink-200 text-sm text-ink-600 hover:bg-ink-50 transition-colors">
+              className="flex-1 py-2 rounded-xl border border-ink-200 text-sm text-ink-600 dark:text-gray-300 hover:bg-ink-50 transition-colors">
               Cancel
             </button>
             <button type="submit" disabled={loading}
@@ -249,7 +249,7 @@ export default function PatientList() {
               setPage(1);
             }}
             placeholder="Search by name, ID, or email…"
-            className="w-full pl-9 pr-4 py-2 text-sm border border-ink-200 rounded-xl bg-white focus:outline-none focus:ring-2 focus:ring-teal-300 focus:border-teal-400 transition"
+            className="w-full pl-9 pr-4 py-2 text-sm border border-ink-200 rounded-xl bg-white dark:bg-ink-800 focus:outline-none focus:ring-2 focus:ring-teal-300 focus:border-teal-400 transition"
           />
           {search && (
             <button
@@ -269,8 +269,8 @@ export default function PatientList() {
               onClick={() => { setFilter(f); setPage(1); }}
               className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all ${
                 filter === f
-                  ? "bg-white text-ink-900 shadow-sm"
-                  : "text-ink-500 hover:text-ink-800"
+                  ? "bg-white dark:bg-ink-800 text-ink-900 dark:text-gray-100 shadow-sm"
+                  : "text-ink-500 dark:text-gray-400 hover:text-ink-800 dark:text-gray-200"
               }`}
             >
               {f === "ALL" ? "All" : f.charAt(0) + f.slice(1).toLowerCase()}
@@ -324,7 +324,7 @@ export default function PatientList() {
                         {getInitials(patient.name)}
                       </div>
                       <div>
-                        <p className="text-sm font-semibold text-ink-800">{patient.name}</p>
+                        <p className="text-sm font-semibold text-ink-800 dark:text-gray-200">{patient.name}</p>
                         <p className="text-xs text-ink-400 truncate max-w-[140px]">{patient.email}</p>
                       </div>
                     </div>
@@ -338,12 +338,12 @@ export default function PatientList() {
                   </td>
 
                   {/* Age / Gender */}
-                  <td className="px-5 py-4 text-sm text-ink-600">
+                  <td className="px-5 py-4 text-sm text-ink-600 dark:text-gray-300">
                     {patient.age ? `${patient.age} yrs` : "—"} · {patient.gender || "—"}
                   </td>
 
                   {/* Assigned */}
-                  <td className="px-5 py-4 text-sm text-ink-600">
+                  <td className="px-5 py-4 text-sm text-ink-600 dark:text-gray-300">
                     {patient.assignedClinician || patient.clinician?.name || "—"}
                   </td>
 
@@ -426,7 +426,7 @@ export default function PatientList() {
                   className={`w-7 h-7 rounded-lg text-xs font-medium transition-colors ${
                     n === page
                       ? "bg-teal-500 text-white"
-                      : "text-ink-600 hover:bg-ink-100"
+                      : "text-ink-600 dark:text-gray-300 hover:bg-ink-100"
                   }`}
                 >
                   {n}

@@ -147,15 +147,15 @@ export default function ClinicianDashboard() {
 
       {/* ── Statistical Summary ──────────────────────────────────────────────── */}
       <div>
-        <h2 className="text-lg font-bold text-ink-900 mb-4">Statistical Summary</h2>
+        <h2 className="text-lg font-bold text-ink-900 dark:text-gray-100 mb-4">Statistical Summary</h2>
         <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4">
 
           {/* Total Patients */}
           <div className="vx-card p-5">
             <div className="flex items-start justify-between mb-4">
               <div>
-                <p className="text-xs font-medium text-ink-500 uppercase tracking-wide">Number of patients</p>
-                <select className="mt-1 text-xs text-ink-600 border border-ink-200 rounded-lg px-2 py-0.5 bg-transparent">
+                <p className="text-xs font-medium text-ink-500 dark:text-gray-400 uppercase tracking-wide">Number of patients</p>
+                <select className="mt-1 text-xs text-ink-600 dark:text-gray-300 border border-ink-200 rounded-lg px-2 py-0.5 bg-transparent">
                   <option>Week</option><option>Month</option><option>Year</option>
                 </select>
               </div>
@@ -167,7 +167,7 @@ export default function ClinicianDashboard() {
                   <p className="text-xs text-ink-400 flex items-center gap-1.5">
                     <Users size={11} /> Adult Patients
                   </p>
-                  <p className="text-2xl font-bold text-ink-900 mt-0.5">{stats.normal + stats.warning}</p>
+                  <p className="text-2xl font-bold text-ink-900 dark:text-gray-100 mt-0.5">{stats.normal + stats.warning}</p>
                 </div>
                 <button className="w-7 h-7 flex items-center justify-center rounded-lg border border-ink-200 text-ink-400 hover:border-teal-300 transition-colors text-xs">⤢</button>
               </div>
@@ -176,7 +176,7 @@ export default function ClinicianDashboard() {
                   <p className="text-xs text-ink-400 flex items-center gap-1.5">
                     <Users size={11} /> Critical
                   </p>
-                  <p className="text-2xl font-bold text-ink-900 mt-0.5">{stats.critical}</p>
+                  <p className="text-2xl font-bold text-ink-900 dark:text-gray-100 mt-0.5">{stats.critical}</p>
                 </div>
                 <button className="w-7 h-7 flex items-center justify-center rounded-lg border border-ink-200 text-ink-400 hover:border-teal-300 transition-colors text-xs">⤢</button>
               </div>
@@ -187,8 +187,8 @@ export default function ClinicianDashboard() {
           <div className="vx-card p-5">
             <div className="flex items-start justify-between mb-4">
               <div>
-                <p className="text-xs font-medium text-ink-500 uppercase tracking-wide">Daily Readings</p>
-                <select className="mt-1 text-xs text-ink-600 border border-ink-200 rounded-lg px-2 py-0.5 bg-transparent">
+                <p className="text-xs font-medium text-ink-500 dark:text-gray-400 uppercase tracking-wide">Daily Readings</p>
+                <select className="mt-1 text-xs text-ink-600 dark:text-gray-300 border border-ink-200 rounded-lg px-2 py-0.5 bg-transparent">
                   <option>Week</option><option>Month</option>
                 </select>
               </div>
@@ -200,7 +200,7 @@ export default function ClinicianDashboard() {
                   <p className="text-xs text-ink-400 flex items-center gap-1.5">
                     <Heart size={11} /> Normal Readings
                   </p>
-                  <p className="text-2xl font-bold text-ink-900 mt-0.5">{stats.normal}</p>
+                  <p className="text-2xl font-bold text-ink-900 dark:text-gray-100 mt-0.5">{stats.normal}</p>
                 </div>
                 <button className="w-7 h-7 flex items-center justify-center rounded-lg border border-ink-200 text-ink-400 hover:border-teal-300 transition-colors text-xs">⤢</button>
               </div>
@@ -209,7 +209,7 @@ export default function ClinicianDashboard() {
                   <p className="text-xs text-ink-400 flex items-center gap-1.5">
                     <AlertCircle size={11} /> Warnings
                   </p>
-                  <p className="text-2xl font-bold text-ink-900 mt-0.5">{stats.warning}</p>
+                  <p className="text-2xl font-bold text-ink-900 dark:text-gray-100 mt-0.5">{stats.warning}</p>
                 </div>
                 <button className="w-7 h-7 flex items-center justify-center rounded-lg border border-ink-200 text-ink-400 hover:border-teal-300 transition-colors text-xs">⤢</button>
               </div>
@@ -220,8 +220,8 @@ export default function ClinicianDashboard() {
           <div className="vx-card p-5">
             <div className="flex items-start justify-between mb-4">
               <div>
-                <p className="text-xs font-medium text-ink-500 uppercase tracking-wide">Monitoring Status</p>
-                <select className="mt-1 text-xs text-ink-600 border border-ink-200 rounded-lg px-2 py-0.5 bg-transparent">
+                <p className="text-xs font-medium text-ink-500 dark:text-gray-400 uppercase tracking-wide">Monitoring Status</p>
+                <select className="mt-1 text-xs text-ink-600 dark:text-gray-300 border border-ink-200 rounded-lg px-2 py-0.5 bg-transparent">
                   <option>Live</option><option>Day</option>
                 </select>
               </div>
@@ -233,7 +233,7 @@ export default function ClinicianDashboard() {
                   <p className="text-xs text-ink-400 flex items-center gap-1.5">
                     <Wifi size={11} /> Devices Online
                   </p>
-                  <p className="text-2xl font-bold text-ink-900 mt-0.5">{stats.live}</p>
+                  <p className="text-2xl font-bold text-ink-900 dark:text-gray-100 mt-0.5">{stats.live}</p>
                 </div>
                 <button className="w-7 h-7 flex items-center justify-center rounded-lg border border-ink-200 text-ink-400 hover:border-teal-300 transition-colors text-xs">⤢</button>
               </div>
@@ -242,7 +242,7 @@ export default function ClinicianDashboard() {
                   <p className="text-xs text-ink-400 flex items-center gap-1.5">
                     <WifiOff size={11} /> Offline
                   </p>
-                  <p className="text-2xl font-bold text-ink-900 mt-0.5">{stats.total - stats.live}</p>
+                  <p className="text-2xl font-bold text-ink-900 dark:text-gray-100 mt-0.5">{stats.total - stats.live}</p>
                 </div>
                 <button className="w-7 h-7 flex items-center justify-center rounded-lg border border-ink-200 text-ink-400 hover:border-teal-300 transition-colors text-xs">⤢</button>
               </div>
@@ -257,10 +257,10 @@ export default function ClinicianDashboard() {
         {/* Health Trends Table */}
         <div className="vx-card">
           <div className="px-5 py-4 border-b border-ink-100 flex items-center justify-between">
-            <h3 className="text-sm font-bold text-ink-900">Health Trends</h3>
+            <h3 className="text-sm font-bold text-ink-900 dark:text-gray-100 ">Health Trends</h3>
             <div className="flex items-center gap-2">
               <button className="icon-btn w-7 h-7"><Search size={13} /></button>
-              <button className="flex items-center gap-1 text-xs text-ink-600 border border-ink-200 rounded-lg px-2 py-1 hover:border-teal-300 transition-colors">
+              <button className="flex items-center gap-1 text-xs text-ink-600 dark:text-gray-300 border border-ink-200 rounded-lg px-2 py-1 hover:border-teal-300 transition-colors">
                 Dec 24 <span className="text-[10px]">▾</span>
               </button>
             </div>
@@ -280,7 +280,7 @@ export default function ClinicianDashboard() {
               <tbody className="divide-y divide-ink-50">
                 {derivedTrends.map((row) => (
                   <tr key={row.disease} className="hover:bg-ink-50/50 transition-colors">
-                    <td className="px-5 py-3 text-sm font-medium text-ink-800">{row.disease}</td>
+                    <td className="px-5 py-3 text-sm font-medium text-ink-800 dark:text-gray-200">{row.disease}</td>
                     <td className="px-5 py-3">{charBadge(row.characteristic)}</td>
                     <td className="px-5 py-3 text-sm text-ink-700">{row.patients}</td>
                     <td className="px-5 py-3 text-sm text-ink-700">—</td>
@@ -294,10 +294,10 @@ export default function ClinicianDashboard() {
         {/* Patient Schedule / Recent Patients */}
         <div className="vx-card">
           <div className="px-5 py-4 border-b border-ink-100 flex items-center justify-between">
-            <h3 className="text-sm font-bold text-ink-900">Patient Schedule</h3>
+            <h3 className="text-sm font-bold text-ink-900 dark:text-gray-100 ">Patient Schedule</h3>
             <div className="flex items-center gap-2">
               <button className="icon-btn w-7 h-7"><Search size={13} /></button>
-              <button className="flex items-center gap-1 text-xs text-ink-600 border border-ink-200 rounded-lg px-2 py-1 hover:border-teal-300 transition-colors">
+              <button className="flex items-center gap-1 text-xs text-ink-600 dark:text-gray-300 border border-ink-200 rounded-lg px-2 py-1 hover:border-teal-300 transition-colors">
                 Dec 24 <span className="text-[10px]">▾</span>
               </button>
             </div>
@@ -334,8 +334,8 @@ export default function ClinicianDashboard() {
                     {appt.time}
                   </span>
                   <div className="flex-1 min-w-0 bg-teal-50 border border-teal-100 rounded-xl px-3 py-2">
-                    <p className="text-xs font-semibold text-ink-800 truncate">{appt.patient}</p>
-                    <p className="text-[11px] text-ink-500">{appt.type}</p>
+                    <p className="text-xs font-semibold text-ink-800 dark:text-gray-200 truncate">{appt.patient}</p>
+                    <p className="text-[11px] text-ink-500 dark:text-gray-400">{appt.type}</p>
                   </div>
                 </div>
               ))
@@ -350,7 +350,7 @@ export default function ClinicianDashboard() {
               {getInitials("Dr. Admin")}
             </div>
             <div>
-              <p className="text-xs font-semibold text-ink-800">Clinician</p>
+              <p className="text-xs font-semibold text-ink-800 dark:text-gray-200">Clinician</p>
               <p className="text-[11px] text-ink-400">{user?.name || "Your account"}</p>
             </div>
             <div className="ml-auto flex -space-x-1">
@@ -367,7 +367,7 @@ export default function ClinicianDashboard() {
       {/* ── Recent Patients Table ────────────────────────────────────────────── */}
       <div className="vx-card">
         <div className="px-5 py-4 border-b border-ink-100 flex items-center justify-between">
-          <h3 className="text-sm font-bold text-ink-900">Recent Patients</h3>
+          <h3 className="text-sm font-bold text-ink-900 dark:text-gray-100 ">Recent Patients</h3>
           <button
             onClick={() => navigate("/clinician/patients")}
             className="text-xs text-teal-500 hover:text-teal-700 font-medium flex items-center gap-1"
@@ -400,7 +400,7 @@ export default function ClinicianDashboard() {
                         {getInitials(patient.name)}
                       </div>
                       <div>
-                        <p className="text-sm font-semibold text-ink-800">{patient.name}</p>
+                        <p className="text-sm font-semibold text-ink-800 dark:text-gray-200">{patient.name}</p>
                         <p className="text-xs text-ink-400 font-mono">{patient.memberId}</p>
                       </div>
                     </div>
@@ -455,7 +455,7 @@ export default function ClinicianDashboard() {
       <div className="vx-card">
         <div className="px-5 py-4 border-b border-ink-100 flex items-center justify-between">
           <div>
-            <h3 className="text-sm font-bold text-ink-900">Live Overview</h3>
+            <h3 className="text-sm font-bold text-ink-900 dark:text-gray-100 ">Live Overview</h3>
             <p className="text-xs text-ink-400 mt-0.5">Real-time HR & SpO₂ — last 60 min</p>
           </div>
           <div className="flex items-center gap-4 text-xs text-ink-400">

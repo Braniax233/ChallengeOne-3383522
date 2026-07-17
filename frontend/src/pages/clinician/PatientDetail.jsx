@@ -33,7 +33,7 @@ import {
 import ClinicianAIAssistant from "../../components/ClinicianAIAssistant";
 import { useWebLLMContext } from "../../context/WebLLMContext";
 import { useAuth } from "../../context/AuthContext";
-import { getPatient } from "../../api/patients";
+import { getPatient, updatePatient } from "../../api/patients";
 import { getReadings } from "../../api/readings";
 import { getNotes, addNote } from "../../api/notes";
 import StatusBadge from "../../components/StatusBadge";
@@ -238,6 +238,11 @@ export default function PatientDetail() {
   const [savedThresh, setSavedThresh] = useState(false);
   const [savingThresh, setSavingThresh] = useState(false);
 
+  // Edit Patient Info
+  const [showEditForm, setShowEditForm] = useState(false);
+  const [editData, setEditData] = useState({});
+  const [savingEdit, setSavingEdit] = useState(false);
+
   useEffect(() => {
     (async () => {
       try {
@@ -330,6 +335,33 @@ export default function PatientDetail() {
     }, 500);
   };
 
+  const handleOpenEdit = () => {
+    setEditData({
+      name: patient.name || "",
+      gender: patient.gender || "",
+      bloodGroup: patient.bloodGroup || "",
+      phone: patient.phone || "",
+      email: patient.email || "",
+      location: patient.location || "",
+      height: patient.height || "",
+      weight: patient.weight || "",
+    });
+    setShowEditForm(true);
+  };
+
+  const handleSaveEdit = async () => {
+    setSavingEdit(true);
+    try {
+      await updatePatient(id, editData);
+      setPatient((prev) => ({ ...prev, ...editData }));
+      setShowEditForm(false);
+    } catch (err) {
+      console.error("Failed to update patient:", err);
+    } finally {
+      setSavingEdit(false);
+    }
+  };
+
   if (loading) return <LoadingSpinner message="Loading patient…" />;
   if (!patient)
     return (
@@ -355,13 +387,13 @@ export default function PatientDetail() {
       <div className="flex items-center gap-3">
         <button
           onClick={() => navigate("/clinician/patients")}
-          className="p-2 rounded-lg hover:bg-gray-100 text-gray-500 hover:text-gray-700 transition-colors"
+          className="p-2 rounded-lg hover:bg-gray-100 dark:bg-ink-700 text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:text-gray-200 transition-colors"
         >
           <ArrowLeft size={18} />
         </button>
         <div>
-          <h2 className="text-lg font-bold text-gray-800">{patient.name}</h2>
-          <p className="text-xs text-gray-500">Patient Detail View</p>
+          <h2 className="text-lg font-bold text-gray-800 dark:text-gray-100 ">{patient.name}</h2>
+          <p className="text-xs text-gray-500 dark:text-gray-400">Patient Detail View</p>
         </div>
       </div>
 
@@ -369,7 +401,7 @@ export default function PatientDetail() {
         {/* ── Left: main content ────────────────────────────────────────────── */}
         <div className="xl:col-span-3 space-y-5">
           {/* Patient Profile Header */}
-          <div className="bg-white rounded-xl border border-gray-100 shadow-sm p-6">
+          <div className="bg-white dark:bg-ink-800 rounded-xl border border-gray-100 dark:border-ink-700 shadow-sm p-6 transition-all duration-300 hover:shadow-md">
             <div className="flex items-start gap-5">
               {/* Avatar */}
               <div className="w-16 h-16 rounded-2xl bg-brand/10 flex items-center justify-center text-brand text-xl font-bold flex-shrink-0">
@@ -377,8 +409,15 @@ export default function PatientDetail() {
               </div>
               <div className="flex-1 min-w-0">
                 <div className="flex items-center gap-3 flex-wrap mb-1">
-                  <h3 className="text-lg font-bold text-gray-800">
+                  <h3 className="text-lg font-bold text-gray-800 dark:text-gray-100 flex items-center gap-2">
                     {patient.name}
+                    <button
+                      onClick={handleOpenEdit}
+                      className="p-1 text-gray-400 hover:text-brand hover:bg-brand/10 rounded-md transition-colors"
+                      title="Edit Patient Information"
+                    >
+                      <Edit2 size={14} />
+                    </button>
                   </h3>
                   <StatusBadge status={patient.status} size="md" />
                   <span className="inline-flex items-center gap-1 px-2 py-0.5 bg-green-100 text-green-700 text-xs font-medium rounded-full border border-green-200">
@@ -386,10 +425,10 @@ export default function PatientDetail() {
                     Active
                   </span>
                 </div>
-                <p className="text-xs text-gray-500 font-mono mb-3">
+                <p className="text-xs text-gray-500 dark:text-gray-400 font-mono mb-3">
                   {patient.memberId}
                 </p>
-                <div className="flex flex-wrap gap-4 text-xs text-gray-500">
+                <div className="flex flex-wrap gap-4 text-xs text-gray-500 dark:text-gray-400">
                   <span className="flex items-center gap-1.5">
                     <Phone size={12} /> {patient.phone || "—"}
                   </span>
@@ -401,14 +440,14 @@ export default function PatientDetail() {
                   </span>
                 </div>
               </div>
-              <div className="text-right text-xs text-gray-500 hidden sm:block flex-shrink-0">
-                <p className="font-medium text-gray-700">{patient.gender}</p>
+              <div className="text-right text-xs text-gray-500 dark:text-gray-400 hidden sm:block flex-shrink-0">
+                <p className="font-medium text-gray-700 dark:text-gray-200">{patient.gender}</p>
                 <p>{patient.age} years old</p>
               </div>
             </div>
 
             {/* Stats strip */}
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mt-5 pt-5 border-t border-gray-100">
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mt-5 pt-5 border-t border-gray-100 dark:border-ink-700">
               {[
                 {
                   label: "Blood Group",
@@ -434,7 +473,7 @@ export default function PatientDetail() {
               ].map((s) => (
                 <div
                   key={s.label}
-                  className="text-center p-3 bg-gray-50 rounded-xl"
+                  className="text-center p-3 bg-gray-50 dark:bg-ink-900 rounded-xl"
                 >
                   <p className={`text-lg font-bold ${s.color}`}>{s.value}</p>
                   {s.extra && (
@@ -451,9 +490,9 @@ export default function PatientDetail() {
           </div>
 
           {/* Tabs */}
-          <div className="bg-white rounded-xl border border-gray-100 shadow-sm overflow-hidden">
+          <div className="bg-white dark:bg-ink-800 rounded-xl border border-gray-100 dark:border-ink-700 shadow-sm overflow-hidden">
             {/* Tab nav */}
-            <div className="flex border-b border-gray-100 overflow-x-auto scrollbar-hide">
+            <div className="flex border-b border-gray-100 dark:border-ink-700 overflow-x-auto scrollbar-hide">
               {TABS.map((tab) => (
                 <button
                   key={tab}
@@ -461,7 +500,7 @@ export default function PatientDetail() {
                   className={`px-5 py-3.5 text-sm font-medium whitespace-nowrap transition-colors border-b-2 ${
                     activeTab === tab
                       ? "border-brand text-brand"
-                      : "border-transparent text-gray-500 hover:text-gray-700"
+                      : "border-transparent text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:text-gray-200"
                   }`}
                 >
                   {TAB_LABELS[tab]}
@@ -477,13 +516,13 @@ export default function PatientDetail() {
                   {/* Current vitals */}
                   <div className="grid grid-cols-2 gap-4">
                     {/* Heart Rate */}
-                    <div className="p-4 rounded-xl border border-gray-100 bg-gray-50">
+                    <div className="p-4 rounded-xl border border-gray-100 dark:border-ink-700 bg-gray-50 dark:bg-ink-900">
                       <div className="flex items-center justify-between mb-3">
                         <div className="flex items-center gap-2">
                           <div className="p-1.5 bg-red-100 rounded-lg">
                             <Heart size={14} className="text-red-500" />
                           </div>
-                          <span className="text-sm font-medium text-gray-700">
+                          <span className="text-sm font-medium text-gray-700 dark:text-gray-200">
                             Heart Rate
                           </span>
                         </div>
@@ -492,23 +531,23 @@ export default function PatientDetail() {
                         />
                       </div>
                       <div className="flex items-end gap-2">
-                        <p className="text-3xl font-bold text-gray-800">
+                        <p className="text-3xl font-bold text-gray-800 dark:text-gray-100 ">
                           {latest?.hr ?? patient.latestReading?.hr ?? "—"}
                         </p>
-                        <p className="text-sm text-gray-500 mb-1">bpm</p>
+                        <p className="text-sm text-gray-500 dark:text-gray-400 mb-1">bpm</p>
                       </div>
                       <div className="h-10 mt-2">
                         <SparklineChart data={hrData} color="#ef4444" />
                       </div>
                     </div>
                     {/* SpO2 */}
-                    <div className="p-4 rounded-xl border border-gray-100 bg-gray-50">
+                    <div className="p-4 rounded-xl border border-gray-100 dark:border-ink-700 bg-gray-50 dark:bg-ink-900">
                       <div className="flex items-center justify-between mb-3">
                         <div className="flex items-center gap-2">
                           <div className="p-1.5 bg-blue-100 rounded-lg">
                             <Activity size={14} className="text-brand" />
                           </div>
-                          <span className="text-sm font-medium text-gray-700">
+                          <span className="text-sm font-medium text-gray-700 dark:text-gray-200">
                             SpO2
                           </span>
                         </div>
@@ -517,10 +556,10 @@ export default function PatientDetail() {
                         />
                       </div>
                       <div className="flex items-end gap-2">
-                        <p className="text-3xl font-bold text-gray-800">
+                        <p className="text-3xl font-bold text-gray-800 dark:text-gray-100 ">
                           {latest?.spo2 ?? patient.latestReading?.spo2 ?? "—"}
                         </p>
-                        <p className="text-sm text-gray-500 mb-1">%</p>
+                        <p className="text-sm text-gray-500 dark:text-gray-400 mb-1">%</p>
                       </div>
                       <div className="h-10 mt-2">
                         <SparklineChart data={spo2Data} color="#3b82f6" />
@@ -531,7 +570,7 @@ export default function PatientDetail() {
                   {/* Trend chart */}
                   <div>
                     <div className="flex items-center justify-between mb-3">
-                      <h4 className="text-sm font-semibold text-gray-700">
+                      <h4 className="text-sm font-semibold text-gray-700 dark:text-gray-200">
                         HR & SpO2 Trend
                       </h4>
                       <div className="flex items-center gap-1">
@@ -542,7 +581,7 @@ export default function PatientDetail() {
                             className={`px-2.5 py-1 text-xs rounded-lg font-medium transition-colors ${
                               period === p
                                 ? "bg-brand text-white"
-                                : "bg-gray-100 text-gray-500 hover:bg-gray-200"
+                                : "bg-gray-100 dark:bg-ink-700 text-gray-500 dark:text-gray-400 hover:bg-gray-200"
                             }`}
                           >
                             {p}
@@ -625,7 +664,7 @@ export default function PatientDetail() {
 
                   {/* Recent alerts in overview */}
                   <div>
-                    <h4 className="text-sm font-semibold text-gray-700 mb-3">
+                    <h4 className="text-sm font-semibold text-gray-700 dark:text-gray-200 mb-3">
                       Recent Alerts
                     </h4>
                     <div className="space-y-2">
@@ -635,7 +674,7 @@ export default function PatientDetail() {
                         .map((r) => (
                           <div
                             key={r._id}
-                            className="flex items-center gap-3 p-3 rounded-lg bg-gray-50 border border-gray-100"
+                            className="flex items-center gap-3 p-3 rounded-lg bg-gray-50 dark:bg-ink-900 border border-gray-100 dark:border-ink-700"
                           >
                             <AlertCircle
                               size={14}
@@ -646,7 +685,7 @@ export default function PatientDetail() {
                               }
                             />
                             <div className="flex-1">
-                              <p className="text-xs font-medium text-gray-700">
+                              <p className="text-xs font-medium text-gray-700 dark:text-gray-200">
                                 HR: {r.hr} bpm &nbsp;·&nbsp; SpO2: {r.spo2}%
                               </p>
                             </div>
@@ -671,7 +710,7 @@ export default function PatientDetail() {
               {activeTab === "vitals" && (
                 <div className="space-y-4">
                   <div className="flex items-center justify-between">
-                    <h4 className="text-sm font-semibold text-gray-700">
+                    <h4 className="text-sm font-semibold text-gray-700 dark:text-gray-200">
                       Readings History
                     </h4>
                     <div className="flex gap-1">
@@ -679,7 +718,7 @@ export default function PatientDetail() {
                         <button
                           key={p}
                           onClick={() => setPeriod(p)}
-                          className={`px-2.5 py-1 text-xs rounded-lg font-medium transition-colors ${period === p ? "bg-brand text-white" : "bg-gray-100 text-gray-500"}`}
+                          className={`px-2.5 py-1 text-xs rounded-lg font-medium transition-colors ${period === p ? "bg-brand text-white" : "bg-gray-100 dark:bg-ink-700 text-gray-500 dark:text-gray-400"}`}
                         >
                           {p}
                         </button>
@@ -744,7 +783,7 @@ export default function PatientDetail() {
                   <div className="overflow-x-auto">
                     <table className="w-full text-sm">
                       <thead>
-                        <tr className="bg-gray-50 text-xs text-gray-500 uppercase">
+                        <tr className="bg-gray-50 dark:bg-ink-900 text-xs text-gray-500 dark:text-gray-400 uppercase">
                           <th className="text-left px-4 py-2">Time</th>
                           <th className="text-left px-4 py-2">HR (bpm)</th>
                           <th className="text-left px-4 py-2">SpO2 (%)</th>
@@ -757,14 +796,14 @@ export default function PatientDetail() {
                           .reverse()
                           .slice(0, 15)
                           .map((r) => (
-                            <tr key={r._id} className="hover:bg-gray-50/50">
-                              <td className="px-4 py-2 text-xs text-gray-500">
+                            <tr key={r._id} className="hover:bg-gray-50 dark:bg-ink-900/50">
+                              <td className="px-4 py-2 text-xs text-gray-500 dark:text-gray-400">
                                 {formatDate(r.timestamp)}
                               </td>
-                              <td className="px-4 py-2 font-medium text-gray-700">
+                              <td className="px-4 py-2 font-medium text-gray-700 dark:text-gray-200">
                                 {r.hr}
                               </td>
-                              <td className="px-4 py-2 font-medium text-gray-700">
+                              <td className="px-4 py-2 font-medium text-gray-700 dark:text-gray-200">
                                 {r.spo2}%
                               </td>
                               <td className="px-4 py-2">
@@ -782,7 +821,7 @@ export default function PatientDetail() {
               {activeTab === "notes" && (
                 <div className="space-y-4">
                   <div className="flex items-center justify-between">
-                    <h4 className="text-sm font-semibold text-gray-700">
+                    <h4 className="text-sm font-semibold text-gray-700 dark:text-gray-200">
                       Session Notes
                     </h4>
                     <button
@@ -801,10 +840,10 @@ export default function PatientDetail() {
                         onChange={(e) => setNoteText(e.target.value)}
                         placeholder="Write session note…"
                         rows={3}
-                        className="w-full text-sm border border-blue-200 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-brand/30 bg-white resize-none"
+                        className="w-full text-sm border border-blue-200 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-brand/30 bg-white dark:bg-ink-800 resize-none"
                       />
                       <div>
-                        <p className="text-xs font-medium text-gray-600 mb-2 flex items-center gap-1">
+                        <p className="text-xs font-medium text-gray-600 dark:text-gray-300 mb-2 flex items-center gap-1">
                           <Tag size={11} /> Tags
                         </p>
                         <div className="flex flex-wrap gap-2">
@@ -822,7 +861,7 @@ export default function PatientDetail() {
                               className={`px-2.5 py-1 text-xs rounded-full border font-medium transition-colors ${
                                 noteTags.includes(tag)
                                   ? "bg-brand text-white border-brand"
-                                  : "bg-white text-gray-600 border-gray-200 hover:border-brand"
+                                  : "bg-white dark:bg-ink-800 text-gray-600 dark:text-gray-300 border-gray-200 dark:border-ink-600 hover:border-brand"
                               }`}
                             >
                               {tag}
@@ -843,7 +882,7 @@ export default function PatientDetail() {
                         <div className="flex gap-2">
                           <button
                             onClick={() => setShowNoteForm(false)}
-                            className="px-3 py-1.5 text-xs rounded-lg border border-gray-200 text-gray-600 hover:bg-gray-50"
+                            className="px-3 py-1.5 text-xs rounded-lg border border-gray-200 dark:border-ink-600 text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:bg-ink-900"
                           >
                             Cancel
                           </button>
@@ -864,14 +903,14 @@ export default function PatientDetail() {
                     {notes.map((note) => (
                       <div
                         key={note._id}
-                        className="p-4 bg-gray-50 rounded-xl border border-gray-100"
+                        className="p-4 bg-gray-50 dark:bg-ink-900 rounded-xl border border-gray-100 dark:border-ink-700"
                       >
                         <div className="flex items-center justify-between mb-2">
                           <div className="flex items-center gap-2">
                             <div className="w-6 h-6 bg-brand/10 rounded-full flex items-center justify-center text-brand text-[10px] font-bold">
                               {getInitials(note.clinicianName)}
                             </div>
-                            <span className="text-xs font-semibold text-gray-700">
+                            <span className="text-xs font-semibold text-gray-700 dark:text-gray-200">
                               {note.clinicianName}
                             </span>
                           </div>
@@ -882,7 +921,7 @@ export default function PatientDetail() {
                             </span>
                           </div>
                         </div>
-                        <p className="text-sm text-gray-700 leading-relaxed">
+                        <p className="text-sm text-gray-700 dark:text-gray-200 leading-relaxed">
                           {note.content}
                         </p>
                         {note.tags?.length > 0 && (
@@ -932,14 +971,14 @@ export default function PatientDetail() {
           />
 
           {/* Patient info card */}
-          <div className="bg-white rounded-xl border border-gray-100 shadow-sm p-5">
-            <h4 className="text-sm font-semibold text-gray-800 mb-4">
+          <div className="bg-white dark:bg-ink-800 rounded-xl border border-gray-100 dark:border-ink-700 shadow-sm p-5">
+            <h4 className="text-sm font-semibold text-gray-800 dark:text-gray-100 mb-4">
               Patient Information
             </h4>
             <div className="space-y-3 text-xs">
               <div>
                 <p className="text-gray-400 mb-0.5">Condition</p>
-                <p className="text-gray-700 font-medium">
+                <p className="text-gray-700 dark:text-gray-200 font-medium">
                   {patient.condition || "—"}
                 </p>
               </div>
@@ -951,18 +990,18 @@ export default function PatientDetail() {
               </div>
               <div>
                 <p className="text-gray-400 mb-0.5">Medications</p>
-                <p className="text-gray-700 leading-relaxed">
+                <p className="text-gray-700 dark:text-gray-200 leading-relaxed">
                   {patient.medications || "—"}
                 </p>
               </div>
-              <div className="pt-3 border-t border-gray-100">
+              <div className="pt-3 border-t border-gray-100 dark:border-ink-700">
                 <p className="text-gray-400 mb-1">Emergency Contact</p>
                 {patient.emergencyContact ? (
                   <div>
-                    <p className="font-semibold text-gray-700">
+                    <p className="font-semibold text-gray-700 dark:text-gray-200">
                       {patient.emergencyContact.name}
                     </p>
-                    <p className="text-gray-500">
+                    <p className="text-gray-500 dark:text-gray-400">
                       {patient.emergencyContact.relation}
                     </p>
                     <p className="text-brand">
@@ -977,8 +1016,8 @@ export default function PatientDetail() {
           </div>
 
           {/* Threshold config */}
-          <div className="bg-white rounded-xl border border-gray-100 shadow-sm p-5">
-            <h4 className="text-sm font-semibold text-gray-800 mb-4">
+          <div className="bg-white dark:bg-ink-800 rounded-xl border border-gray-100 dark:border-ink-700 shadow-sm p-5">
+            <h4 className="text-sm font-semibold text-gray-800 dark:text-gray-100 mb-4">
               Alert Thresholds
             </h4>
             <div className="space-y-3">
@@ -989,7 +1028,7 @@ export default function PatientDetail() {
                 { label: "HR Max (bpm)", key: "hrMax", min: 80, max: 200 },
               ].map(({ label, key, min, max }) => (
                 <div key={key} className="flex items-center gap-2">
-                  <label className="text-xs text-gray-500 w-28 flex-shrink-0">
+                  <label className="text-xs text-gray-500 dark:text-gray-400 w-28 flex-shrink-0">
                     {label}
                   </label>
                   <input
@@ -1003,7 +1042,7 @@ export default function PatientDetail() {
                     }
                     min={min}
                     max={max}
-                    className="flex-1 text-sm border border-gray-200 rounded-lg px-2 py-1 text-center focus:outline-none focus:ring-2 focus:ring-brand/30 focus:border-brand"
+                    className="flex-1 text-sm border border-gray-200 dark:border-ink-600 rounded-lg px-2 py-1 text-center focus:outline-none focus:ring-2 focus:ring-brand/30 focus:border-brand"
                   />
                 </div>
               ))}
@@ -1031,18 +1070,18 @@ export default function PatientDetail() {
 
           {/* BMI card */}
           {bmi && (
-            <div className="bg-white rounded-xl border border-gray-100 shadow-sm p-5">
-              <h4 className="text-sm font-semibold text-gray-800 mb-3">
+            <div className="bg-white dark:bg-ink-800 rounded-xl border border-gray-100 dark:border-ink-700 shadow-sm p-5">
+              <h4 className="text-sm font-semibold text-gray-800 dark:text-gray-100 mb-3">
                 BMI Assessment
               </h4>
               <div className="text-center">
-                <p className="text-3xl font-bold text-gray-800">{bmi.value}</p>
+                <p className="text-3xl font-bold text-gray-800 dark:text-gray-100 ">{bmi.value}</p>
                 <span
                   className={`inline-block mt-1 text-xs font-medium px-2.5 py-0.5 rounded-full border ${bmi.color}`}
                 >
                   {bmi.label}
                 </span>
-                <p className="text-xs text-gray-500 mt-3">
+                <p className="text-xs text-gray-500 dark:text-gray-400 mt-3">
                   {patient.height}cm · {patient.weight}kg
                 </p>
               </div>
@@ -1056,6 +1095,116 @@ export default function PatientDetail() {
           </button>
         </div>
       </div>
+
+      {/* Edit Profile Modal */}
+      {showEditForm && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-ink-900/40 backdrop-blur-sm">
+          <div className="bg-white dark:bg-ink-800 rounded-2xl w-full max-w-md shadow-xl border border-gray-100 dark:border-ink-700 overflow-hidden animate-in fade-in zoom-in-95 duration-200">
+            <div className="px-6 py-4 border-b border-gray-100 dark:border-ink-700 flex items-center justify-between">
+              <h3 className="font-bold text-gray-800 dark:text-gray-100 text-lg">Edit Patient Information</h3>
+              <button
+                onClick={() => setShowEditForm(false)}
+                className="p-1 text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 rounded-lg transition-colors"
+              >
+                <Plus size={20} className="rotate-45" />
+              </button>
+            </div>
+            <div className="p-6 space-y-4 max-h-[70vh] overflow-y-auto">
+              <div>
+                <label className="block text-xs font-medium text-gray-500 dark:text-gray-400 mb-1">Name</label>
+                <input
+                  type="text"
+                  value={editData.name || ""}
+                  onChange={(e) => setEditData({ ...editData, name: e.target.value })}
+                  className="w-full bg-surface dark:bg-ink-900 border border-gray-200 dark:border-ink-700 rounded-lg px-3 py-2 text-sm text-gray-800 dark:text-gray-100 outline-none focus:border-brand transition-colors"
+                />
+              </div>
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-xs font-medium text-gray-500 dark:text-gray-400 mb-1">Gender</label>
+                  <select
+                    value={editData.gender || ""}
+                    onChange={(e) => setEditData({ ...editData, gender: e.target.value })}
+                    className="w-full bg-surface dark:bg-ink-900 border border-gray-200 dark:border-ink-700 rounded-lg px-3 py-2 text-sm text-gray-800 dark:text-gray-100 outline-none focus:border-brand transition-colors"
+                  >
+                    <option value="">Select...</option>
+                    <option value="Male">Male</option>
+                    <option value="Female">Female</option>
+                    <option value="Other">Other</option>
+                  </select>
+                </div>
+                <div>
+                  <label className="block text-xs font-medium text-gray-500 dark:text-gray-400 mb-1">Blood Group</label>
+                  <select
+                    value={editData.bloodGroup || ""}
+                    onChange={(e) => setEditData({ ...editData, bloodGroup: e.target.value })}
+                    className="w-full bg-surface dark:bg-ink-900 border border-gray-200 dark:border-ink-700 rounded-lg px-3 py-2 text-sm text-gray-800 dark:text-gray-100 outline-none focus:border-brand transition-colors"
+                  >
+                    <option value="">Select...</option>
+                    {["A+", "A-", "B+", "B-", "AB+", "AB-", "O+", "O-"].map((bg) => (
+                      <option key={bg} value={bg}>{bg}</option>
+                    ))}
+                  </select>
+                </div>
+              </div>
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-xs font-medium text-gray-500 dark:text-gray-400 mb-1">Height (cm)</label>
+                  <input
+                    type="number"
+                    value={editData.height || ""}
+                    onChange={(e) => setEditData({ ...editData, height: e.target.value })}
+                    className="w-full bg-surface dark:bg-ink-900 border border-gray-200 dark:border-ink-700 rounded-lg px-3 py-2 text-sm text-gray-800 dark:text-gray-100 outline-none focus:border-brand transition-colors"
+                  />
+                </div>
+                <div>
+                  <label className="block text-xs font-medium text-gray-500 dark:text-gray-400 mb-1">Weight (kg)</label>
+                  <input
+                    type="number"
+                    value={editData.weight || ""}
+                    onChange={(e) => setEditData({ ...editData, weight: e.target.value })}
+                    className="w-full bg-surface dark:bg-ink-900 border border-gray-200 dark:border-ink-700 rounded-lg px-3 py-2 text-sm text-gray-800 dark:text-gray-100 outline-none focus:border-brand transition-colors"
+                  />
+                </div>
+              </div>
+              <div>
+                <label className="block text-xs font-medium text-gray-500 dark:text-gray-400 mb-1">Phone</label>
+                <input
+                  type="tel"
+                  value={editData.phone || ""}
+                  onChange={(e) => setEditData({ ...editData, phone: e.target.value })}
+                  className="w-full bg-surface dark:bg-ink-900 border border-gray-200 dark:border-ink-700 rounded-lg px-3 py-2 text-sm text-gray-800 dark:text-gray-100 outline-none focus:border-brand transition-colors"
+                />
+              </div>
+              <div>
+                <label className="block text-xs font-medium text-gray-500 dark:text-gray-400 mb-1">Location</label>
+                <input
+                  type="text"
+                  value={editData.location || ""}
+                  onChange={(e) => setEditData({ ...editData, location: e.target.value })}
+                  className="w-full bg-surface dark:bg-ink-900 border border-gray-200 dark:border-ink-700 rounded-lg px-3 py-2 text-sm text-gray-800 dark:text-gray-100 outline-none focus:border-brand transition-colors"
+                />
+              </div>
+            </div>
+            <div className="px-6 py-4 bg-surface dark:bg-ink-900 border-t border-gray-100 dark:border-ink-700 flex justify-end gap-3">
+              <button
+                onClick={() => setShowEditForm(false)}
+                className="px-4 py-2 text-sm font-medium text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white transition-colors"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={handleSaveEdit}
+                disabled={savingEdit}
+                className="px-4 py-2 bg-gradient-to-r from-brand to-blue-600 text-white text-sm font-medium rounded-lg shadow-md hover:shadow-lg transition-all disabled:opacity-50 flex items-center gap-2"
+              >
+                {savingEdit ? <LoadingSpinner size="14px" /> : <Save size={14} />}
+                {savingEdit ? "Saving..." : "Save Changes"}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

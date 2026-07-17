@@ -101,7 +101,7 @@ export default function Alerts() {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h2 className="text-lg font-bold text-ink-900">Alerts & Notifications</h2>
+          <h2 className="text-lg font-bold text-ink-900 dark:text-gray-100 ">Alerts & Notifications</h2>
           <p className="text-xs text-ink-400 mt-0.5">
             {counts.CRITICAL + counts.WARNING} unresolved alerts
           </p>
@@ -124,8 +124,8 @@ export default function Alerts() {
               onClick={() => setFilter(tab.key)}
               className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-all ${
                 filter === tab.key
-                  ? "bg-white text-ink-900 shadow-sm"
-                  : "text-ink-500 hover:text-ink-800"
+                  ? "bg-white dark:bg-ink-800 text-ink-900 dark:text-gray-100 shadow-sm"
+                  : "text-ink-500 dark:text-gray-400 hover:text-ink-800 dark:text-gray-200"
               }`}
             >
               {tab.label}
@@ -134,8 +134,8 @@ export default function Alerts() {
                   filter === tab.key
                     ? tab.key === "CRITICAL" ? "bg-coral-100 text-coral-600"
                     : tab.key === "WARNING"  ? "bg-amber-100 text-amber-600"
-                    : "bg-ink-100 text-ink-600"
-                    : "bg-ink-200 text-ink-500"
+                    : "bg-ink-100 text-ink-600 dark:text-gray-300"
+                    : "bg-ink-200 text-ink-500 dark:text-gray-400"
                 }`}>
                   {count}
                 </span>
@@ -181,12 +181,12 @@ export default function Alerts() {
                     </div>
                     <div>
                       <div className="flex items-center gap-2 flex-wrap mb-1">
-                        <p className="text-sm font-semibold text-ink-800">{alert.type}</p>
+                        <p className="text-sm font-semibold text-ink-800 dark:text-gray-200">{alert.type}</p>
                         <StatusBadge status={isResolved ? "RESOLVED" : alert.severity} />
                       </div>
                       <div className="flex items-center gap-1.5 mb-2">
                         <User size={12} className="text-ink-400" />
-                        <p className="text-xs text-ink-600 font-medium">{alert.patientName}</p>
+                        <p className="text-xs text-ink-600 dark:text-gray-300 font-medium">{alert.patientName}</p>
                         <span className="text-ink-300">·</span>
                         <span className="text-xs font-mono text-ink-400">{alert.memberId}</span>
                       </div>

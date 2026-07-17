@@ -19,9 +19,33 @@
     body {
         margin: 0;
         padding: 0;
-        background-color: #F4F6F8;
+        background-color: #F8FAFC; /* soft slate-50 */
         font-family: "Inter", ui-sans-serif, system-ui, sans-serif;
-        color: #1A1D23;
+        color: #0F172A; /* new deep ink */
+    }
+
+    /* Custom Webkit Scrollbars for a premium feel */
+    ::-webkit-scrollbar {
+        width: 8px;
+        height: 8px;
+    }
+    ::-webkit-scrollbar-track {
+        background: transparent;
+    }
+    ::-webkit-scrollbar-thumb {
+        background-color: #CBD5E1; /* slate-300 */
+        border-radius: 9999px;
+        border: 2px solid transparent;
+        background-clip: padding-box;
+    }
+    html.dark ::-webkit-scrollbar-thumb {
+        background-color: #475569; /* slate-600 */
+    }
+    ::-webkit-scrollbar-thumb:hover {
+        background-color: #94A3B8; /* slate-400 */
+    }
+    html.dark ::-webkit-scrollbar-thumb:hover {
+        background-color: #64748B; /* slate-500 */
     }
 
     #root {
@@ -30,16 +54,47 @@
         min-height: 100vh;
         text-align: left;
     }
-    /* Dark Mode Filter Trick */
-    html.dark {
-        filter: invert(1) hue-rotate(180deg);
+    /* True Dark Mode Overrides */
+    html.dark body {
+        color-scheme: dark;
+        background-color: #0F172A; /* new ink-900 */
+        color: #F8FAFC; /* new ink-50 */
     }
-    html.dark img, html.dark video, html.dark .lucide:not(.dark-toggle-icon) {
-        filter: invert(1) hue-rotate(180deg);
+}
+
+@layer utilities {
+    /* Global explicit mappings for dark mode */
+    html.dark .bg-white {
+        background-color: #1E293B !important; /* new ink-800 */
+        color: #F8FAFC !important;
     }
-    /* Exempt the toggle button from inversion so it stays visible */
-    html.dark .dark-toggle-btn {
-        filter: invert(1) hue-rotate(180deg);
+    html.dark .bg-surface {
+        background-color: #0F172A !important; /* new ink-900 */
+    }
+    html.dark .text-ink-900,
+    html.dark .text-gray-900,
+    html.dark .text-slate-900,
+    html.dark .text-gray-800 {
+        color: #F8FAFC !important; /* ink-50 */
+    }
+    html.dark .text-ink-600,
+    html.dark .text-slate-600,
+    html.dark .text-gray-600 {
+        color: #94A3B8 !important; /* ink-400 */
+    }
+    html.dark .border-ink-200,
+    html.dark .border-gray-200,
+    html.dark .border-slate-200,
+    html.dark .border-gray-100 {
+        border-color: #334155 !important; /* ink-700 */
+    }
+    html.dark .bg-ink-50,
+    html.dark .bg-slate-50,
+    html.dark .bg-gray-50 {
+        background-color: #1E293B !important; /* ink-800 */
+    }
+    html.dark .bg-ink-100 {
+        background-color: #334155 !important; /* ink-700 */
     }
 }
 
@@ -103,4 +158,11 @@
     .animate-float      { animation: floatY 3.5s ease-in-out infinite; }
     .animate-ping-ring  { animation: pingRing 2.5s ease-out infinite; }
     .animate-fade-in    { animation: fadeSlideIn 0.25s ease-out forwards; }
+
+    /* Remove glowing shadow from cards in dark mode and use clean borders instead */
+    html.dark .vx-card {
+        box-shadow: none !important;
+        border: 1px solid #334155 !important;
+    }
 }
+

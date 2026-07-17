@@ -62,7 +62,7 @@ Do NOT diagnose the patient. Offer general, non-diagnostic lifestyle advice base
     return (
       <div className="bg-gradient-to-br from-indigo-500 to-purple-600 rounded-xl p-6 text-white shadow-sm">
         <div className="flex items-center gap-3 mb-3">
-          <div className="w-10 h-10 rounded-full bg-white/20 flex items-center justify-center font-bold text-white tracking-widest text-sm">
+          <div className="w-10 h-10 rounded-full bg-white dark:bg-ink-800 /20 flex items-center justify-center font-bold text-white tracking-widest text-sm">
             AI
           </div>
           <div>
@@ -85,14 +85,14 @@ Do NOT diagnose the patient. Offer general, non-diagnostic lifestyle advice base
               <Loader2 size={16} className="animate-spin" />
               <span>{progressText || "Loading..."}</span>
             </div>
-            <div className="h-1.5 w-full bg-white/20 rounded-full overflow-hidden">
-              <div className="h-full bg-white rounded-full animate-pulse w-full"></div>
+            <div className="h-1.5 w-full bg-white dark:bg-ink-800 /20 rounded-full overflow-hidden">
+              <div className="h-full bg-white dark:bg-ink-800 rounded-full animate-pulse w-full"></div>
             </div>
           </div>
         ) : (
           <button 
             onClick={init}
-            className="w-full flex items-center justify-center gap-2 bg-white text-indigo-700 px-4 py-3 rounded-xl text-sm font-bold hover:bg-indigo-50 transition-colors shadow-sm"
+            className="w-full flex items-center justify-center gap-2 bg-white dark:bg-ink-800 text-indigo-700 px-4 py-3 rounded-xl text-sm font-bold hover:bg-indigo-50 transition-colors shadow-sm"
           >
             <Download size={18} /> {isCached ? "Load Offline AI" : "Download Offline AI"}
           </button>
@@ -102,10 +102,10 @@ Do NOT diagnose the patient. Offer general, non-diagnostic lifestyle advice base
   }
 
   return (
-    <div className="bg-white border border-gray-100 rounded-xl shadow-sm flex flex-col h-[500px] overflow-hidden">
+    <div className="bg-white dark:bg-ink-800 border border-gray-100 dark:border-ink-700 rounded-xl shadow-sm flex flex-col h-[500px] overflow-hidden">
       {/* Header */}
       <div className="bg-gradient-to-r from-indigo-500 to-purple-600 p-4 text-white flex items-center gap-3 shrink-0">
-        <div className="w-8 h-8 rounded-full bg-white/20 flex items-center justify-center font-bold text-white text-xs tracking-widest">
+        <div className="w-8 h-8 rounded-full bg-white dark:bg-ink-800 /20 flex items-center justify-center font-bold text-white text-xs tracking-widest">
           AI
         </div>
         <div>
@@ -115,24 +115,24 @@ Do NOT diagnose the patient. Offer general, non-diagnostic lifestyle advice base
       </div>
 
       {/* Smart Summary Area */}
-      <div className="p-4 bg-indigo-50/50 border-b border-gray-100 shrink-0">
+      <div className="p-4 bg-indigo-50/50 border-b border-gray-100 dark:border-ink-700 shrink-0">
         <div className="flex items-center gap-1.5 mb-2 text-indigo-700">
           <span className="bg-indigo-100 text-indigo-700 px-1.5 py-0.5 rounded text-[10px] font-bold tracking-wider">AI</span>
           <span className="text-xs font-bold uppercase tracking-wide">Smart Summary</span>
         </div>
         {generatingSummary ? (
-          <div className="flex items-center gap-2 text-sm text-gray-500">
+          <div className="flex items-center gap-2 text-sm text-gray-500 dark:text-gray-400">
             <Loader2 size={14} className="animate-spin" /> Analyzing vitals...
           </div>
         ) : (
-          <p className="text-sm text-gray-700 leading-relaxed font-medium">
+          <p className="text-sm text-gray-700 dark:text-gray-200 leading-relaxed font-medium">
             {summary}
           </p>
         )}
       </div>
 
       {/* Chat History */}
-      <div className="flex-1 overflow-y-auto p-4 space-y-4 bg-gray-50/30">
+      <div className="flex-1 overflow-y-auto p-4 space-y-4 bg-gray-50 dark:bg-ink-900/30">
         {messages.length === 0 && (
           <div className="text-center text-gray-400 text-sm mt-8">
             Ask me a question about your vitals or health!
@@ -144,7 +144,7 @@ Do NOT diagnose the patient. Offer general, non-diagnostic lifestyle advice base
               className={`max-w-[85%] rounded-2xl px-4 py-2 text-sm ${
                 msg.role === "user" 
                   ? "bg-brand text-white rounded-br-none" 
-                  : "bg-gray-100 text-gray-800 rounded-bl-none"
+                  : "bg-gray-100 dark:bg-ink-700 text-gray-800 dark:text-gray-100 rounded-bl-none"
               }`}
             >
               {msg.content}
@@ -153,7 +153,7 @@ Do NOT diagnose the patient. Offer general, non-diagnostic lifestyle advice base
         ))}
         {isTyping && (
           <div className="flex justify-start">
-            <div className="bg-gray-100 text-gray-500 rounded-2xl rounded-bl-none px-4 py-2 text-sm flex items-center gap-1">
+            <div className="bg-gray-100 dark:bg-ink-700 text-gray-500 dark:text-gray-400 rounded-2xl rounded-bl-none px-4 py-2 text-sm flex items-center gap-1">
               <span className="w-1.5 h-1.5 bg-gray-400 rounded-full animate-bounce"></span>
               <span className="w-1.5 h-1.5 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '0.1s' }}></span>
               <span className="w-1.5 h-1.5 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '0.2s' }}></span>
@@ -163,13 +163,13 @@ Do NOT diagnose the patient. Offer general, non-diagnostic lifestyle advice base
       </div>
 
       {/* Input Form */}
-      <form onSubmit={handleSend} className="p-3 border-t border-gray-100 bg-white flex items-center gap-2 shrink-0">
+      <form onSubmit={handleSend} className="p-3 border-t border-gray-100 dark:border-ink-700 bg-white dark:bg-ink-800 flex items-center gap-2 shrink-0">
         <input 
           type="text" 
           value={input}
           onChange={(e) => setInput(e.target.value)}
           placeholder="Ask a question..."
-          className="flex-1 bg-gray-50 border border-gray-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-brand focus:ring-1 focus:ring-brand"
+          className="flex-1 bg-gray-50 dark:bg-ink-900 border border-gray-200 dark:border-ink-600 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-brand focus:ring-1 focus:ring-brand"
           disabled={isTyping}
         />
         <button 

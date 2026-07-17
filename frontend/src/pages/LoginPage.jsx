@@ -18,22 +18,22 @@ const ROLE_HOME_PATH = {
 
 // ── Input style ────────────────────────────────────────────────────────────────
 const inputClass =
-  "border border-ink-200 bg-white text-ink-900 placeholder-ink-400 rounded-xl px-4 py-2.5 w-full text-sm focus:outline-none focus:border-teal-400 focus:ring-2 focus:ring-teal-200 transition-all";
-const labelClass = "text-xs font-medium text-ink-600 mb-1 block";
+  "border border-ink-200 bg-white dark:bg-ink-800 text-ink-900 dark:text-gray-100 placeholder-ink-400 rounded-xl px-4 py-2.5 w-full text-sm focus:outline-none focus:border-teal-400 focus:ring-2 focus:ring-teal-200 transition-all";
+const labelClass = "text-xs font-medium text-ink-600 dark:text-gray-300 mb-1 block";
 
 // ── Context/Role selection card ────────────────────────────────────────────────
 function SelectionCard({ icon: Icon, label, subtitle, onClick, accent = "teal", delay = 0 }) {
   const colors = {
-    teal:   "bg-teal-50 border-teal-200 hover:border-teal-400 hover:bg-teal-100",
-    blue:   "bg-blue-50 border-blue-200 hover:border-blue-400 hover:bg-blue-100",
-    purple: "bg-purple-50 border-purple-200 hover:border-purple-400 hover:bg-purple-100",
-    coral:  "bg-coral-50 border-coral-100 hover:border-coral-300 hover:bg-coral-100",
+    teal:   "bg-teal-50 border-teal-200 hover:border-teal-400 hover:bg-teal-100 dark:bg-teal-900/30 dark:border-teal-800/50 dark:hover:bg-teal-800/40",
+    blue:   "bg-blue-50 border-blue-200 hover:border-blue-400 hover:bg-blue-100 dark:bg-blue-900/30 dark:border-blue-800/50 dark:hover:bg-blue-800/40",
+    purple: "bg-purple-50 border-purple-200 hover:border-purple-400 hover:bg-purple-100 dark:bg-purple-900/30 dark:border-purple-800/50 dark:hover:bg-purple-800/40",
+    coral:  "bg-coral-50 border-coral-100 hover:border-coral-300 hover:bg-coral-100 dark:bg-coral-900/30 dark:border-coral-800/50 dark:hover:bg-coral-800/40",
   };
   const iconColors = {
-    teal:   "bg-teal-100 text-teal-600",
-    blue:   "bg-blue-100 text-blue-600",
-    purple: "bg-purple-100 text-purple-600",
-    coral:  "bg-coral-100 text-coral-500",
+    teal:   "bg-teal-100 text-teal-600 dark:bg-teal-500/20 dark:text-teal-400",
+    blue:   "bg-blue-100 text-blue-600 dark:bg-blue-500/20 dark:text-blue-400",
+    purple: "bg-purple-100 text-purple-600 dark:bg-purple-500/20 dark:text-purple-400",
+    coral:  "bg-coral-100 text-coral-500 dark:bg-coral-500/20 dark:text-coral-400",
   };
   return (
     <button
@@ -45,10 +45,10 @@ function SelectionCard({ icon: Icon, label, subtitle, onClick, accent = "teal", 
         <Icon size={22} />
       </div>
       <div className="flex-1">
-        <p className="text-sm font-bold text-ink-900">{label}</p>
-        {subtitle && <p className="text-xs text-ink-500 mt-0.5">{subtitle}</p>}
+        <p className="text-sm font-bold text-ink-900 dark:text-gray-100 ">{label}</p>
+        {subtitle && <p className="text-xs text-ink-500 dark:text-gray-400 mt-0.5">{subtitle}</p>}
       </div>
-      <ChevronRight size={16} className="text-ink-300 group-hover:text-ink-600 transition-colors" />
+      <ChevronRight size={16} className="text-ink-300 group-hover:text-ink-600 dark:text-gray-300 transition-colors" />
     </button>
   );
 }
@@ -158,7 +158,7 @@ export default function LoginPage() {
   const RoleIcon = uiRole === "doctor" ? Stethoscope : uiRole === "nurse" ? UserCheck : Heart;
 
   return (
-    <div className="min-h-screen bg-surface flex">
+    <div className="min-h-screen bg-surface dark:bg-ink-950 flex">
       {/* ── Left decorative panel ─────────────────────────────────────────────── */}
       <div className="hidden lg:flex w-[420px] flex-shrink-0 bg-gradient-to-br from-teal-500 to-teal-700 flex-col justify-between p-10 relative overflow-hidden">
         {/* Blobs */}
@@ -167,7 +167,7 @@ export default function LoginPage() {
 
         {/* Logo */}
         <div className="relative z-10 flex items-center gap-3">
-          <div className="w-10 h-10 rounded-xl bg-white/20 backdrop-blur-sm flex items-center justify-center">
+          <div className="w-10 h-10 rounded-xl bg-white dark:bg-ink-800 /20 backdrop-blur-sm flex items-center justify-center">
             <Activity size={20} className="text-white" />
           </div>
           <div>
@@ -193,9 +193,9 @@ export default function LoginPage() {
               { label: "Device accuracy",     value: "99.2%"  },
               { label: "Uptime",              value: "99.9%"  },
             ].map((s) => (
-              <div key={s.label} className="bg-white/10 backdrop-blur-sm rounded-xl p-3">
+              <div key={s.label} className="bg-white/10 dark:bg-ink-800/30 backdrop-blur-sm rounded-xl p-3 border border-white/20 dark:border-ink-700/50 shadow-sm">
                 <p className="text-white font-bold text-lg">{s.value}</p>
-                <p className="text-teal-200 text-[11px] mt-0.5">{s.label}</p>
+                <p className="text-teal-100 text-[11px] mt-0.5">{s.label}</p>
               </div>
             ))}
           </div>
@@ -214,7 +214,7 @@ export default function LoginPage() {
           <div className="w-8 h-8 rounded-xl bg-teal-500 flex items-center justify-center">
             <Activity size={16} className="text-white" />
           </div>
-          <span className="font-bold text-ink-900 text-lg">Vital<span className="text-teal-500">X</span></span>
+          <span className="font-bold text-ink-900 dark:text-gray-100 text-lg">Vital<span className="text-teal-500">X</span></span>
         </div>
 
         {/* Content */}
@@ -223,7 +223,7 @@ export default function LoginPage() {
           {step !== "context" && (
             <button
               onClick={handleBack}
-              className="mb-6 flex items-center gap-1.5 text-sm text-ink-500 hover:text-ink-900 transition-colors group"
+              className="mb-6 flex items-center gap-1.5 text-sm text-ink-500 dark:text-gray-400 hover:text-ink-900 dark:text-gray-100 transition-colors group"
             >
               <ArrowLeft size={14} className="group-hover:-translate-x-0.5 transition-transform" />
               Back
@@ -235,8 +235,8 @@ export default function LoginPage() {
             {/* ── STEP 1: context ──────────────────────────────────────────── */}
             {step === "context" && (
               <div>
-                <h1 className="text-2xl font-bold text-ink-900 mb-1">Welcome to VitalX</h1>
-                <p className="text-sm text-ink-500 mb-6">How will you use the platform?</p>
+                <h1 className="text-2xl font-bold text-ink-900 dark:text-gray-100 mb-1">Welcome to VitalX</h1>
+                <p className="text-sm text-ink-500 dark:text-gray-400 mb-6">How will you use the platform?</p>
                 <div className="space-y-3">
                   <SelectionCard
                     icon={Building2} label="Hospital Staff" subtitle="Doctors, nurses & clinicians"
@@ -253,8 +253,8 @@ export default function LoginPage() {
             {/* ── STEP 2: role ─────────────────────────────────────────────── */}
             {step === "role" && (
               <div>
-                <h1 className="text-2xl font-bold text-ink-900 mb-1">Select your role</h1>
-                <p className="text-sm text-ink-500 mb-6">Choose your position at the hospital</p>
+                <h1 className="text-2xl font-bold text-ink-900 dark:text-gray-100 mb-1">Select your role</h1>
+                <p className="text-sm text-ink-500 dark:text-gray-400 mb-6">Choose your position at the hospital</p>
                 <div className="space-y-3">
                   <SelectionCard
                     icon={Stethoscope} label="Doctor / Clinician" subtitle="Patient monitoring & alerts"
@@ -273,11 +273,11 @@ export default function LoginPage() {
               <div>
                 <div className="flex items-center gap-2 mb-1">
                   <RoleIcon size={20} className="text-teal-500" />
-                  <h1 className="text-2xl font-bold text-ink-900">
+                  <h1 className="text-2xl font-bold text-ink-900 dark:text-gray-100 ">
                     Welcome, {ROLE_LABELS[uiRole]}
                   </h1>
                 </div>
-                <p className="text-sm text-ink-500 mb-6">Sign in or create a new account</p>
+                <p className="text-sm text-ink-500 dark:text-gray-400 mb-6">Sign in or create a new account</p>
                 <div className="space-y-3">
                   <SelectionCard
                     icon={LogIn} label="Sign In" subtitle="Access your existing account"
@@ -294,7 +294,7 @@ export default function LoginPage() {
             {/* ── STEP 4: form ─────────────────────────────────────────────── */}
             {step === "form" && (
               <div>
-                <h1 className="text-2xl font-bold text-ink-900 mb-0.5">
+                <h1 className="text-2xl font-bold text-ink-900 dark:text-gray-100 mb-0.5">
                   {authMode === "signin" ? "Sign In" : "Create Account"}
                 </h1>
                 <p className="text-sm text-ink-400 mb-6">

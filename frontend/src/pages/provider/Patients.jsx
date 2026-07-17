@@ -80,26 +80,26 @@ export default function ProviderPatients() {
           value={search}
           onChange={(e) => setSearch(e.target.value)}
           placeholder="Search by name or ID…"
-          className="w-full pl-9 pr-9 py-2 text-sm border border-gray-200 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-brand/30 focus:border-brand"
+          className="w-full pl-9 pr-9 py-2 text-sm border border-gray-200 dark:border-ink-600 rounded-lg bg-white dark:bg-ink-800 focus:outline-none focus:ring-2 focus:ring-brand/30 focus:border-brand"
         />
         {search && (
           <button
             onClick={() => setSearch("")}
-            className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
+            className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 dark:text-gray-300"
           >
             <X size={13} />
           </button>
         )}
       </div>
 
-      <div className="bg-white rounded-xl border border-gray-100 shadow-sm overflow-hidden">
-        <div className="px-6 py-3 border-b border-gray-100 text-xs text-gray-500">
+      <div className="bg-white dark:bg-ink-800 rounded-xl border border-gray-100 dark:border-ink-700 shadow-sm overflow-hidden">
+        <div className="px-6 py-3 border-b border-gray-100 dark:border-ink-700 text-xs text-gray-500 dark:text-gray-400">
           {filtered.length} patient{filtered.length !== 1 ? "s" : ""} found
         </div>
         <div className="overflow-x-auto">
           <table className="w-full min-w-[560px]">
             <thead>
-              <tr className="bg-gray-50/80">
+              <tr className="bg-gray-50 dark:bg-ink-900/80">
                 {[
                   "Patient",
                   "Membership ID",
@@ -110,7 +110,7 @@ export default function ProviderPatients() {
                 ].map((h) => (
                   <th
                     key={h}
-                    className="text-left text-xs font-semibold text-gray-500 uppercase tracking-wide px-6 py-3"
+                    className="text-left text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wide px-6 py-3"
                   >
                     {h}
                   </th>
@@ -128,17 +128,17 @@ export default function ProviderPatients() {
                       <div className="w-8 h-8 rounded-full bg-brand/10 flex items-center justify-center text-brand text-xs font-bold flex-shrink-0">
                         {getInitials(p.name)}
                       </div>
-                      <p className="text-sm font-semibold text-gray-800">
+                      <p className="text-sm font-semibold text-gray-800 dark:text-gray-100 ">
                         {p.name}
                       </p>
                     </div>
                   </td>
                   <td className="px-6 py-4">
-                    <span className="font-mono text-xs bg-gray-100 text-gray-700 px-2 py-0.5 rounded">
+                    <span className="font-mono text-xs bg-gray-100 dark:bg-ink-700 text-gray-700 dark:text-gray-200 px-2 py-0.5 rounded">
                       {p.memberId}
                     </span>
                   </td>
-                  <td className="px-6 py-4 text-sm text-gray-600">
+                  <td className="px-6 py-4 text-sm text-gray-600 dark:text-gray-300">
                     {p.age ? `${p.age} yrs` : "—"} · {p.gender || "—"}
                   </td>
                   <td className="px-6 py-4">
@@ -147,7 +147,7 @@ export default function ProviderPatients() {
                   <td className="px-6 py-4">
                     {p.latestReading ? (
                       <div>
-                        <p className="text-xs text-gray-700 font-medium">
+                        <p className="text-xs text-gray-700 dark:text-gray-200 font-medium">
                           HR: {p.latestReading.hr} · SpO2:{" "}
                           {p.latestReading.spo2}%
                         </p>

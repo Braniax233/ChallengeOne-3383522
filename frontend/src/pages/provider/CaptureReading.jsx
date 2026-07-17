@@ -262,8 +262,8 @@ export default function CaptureReading() {
       {step === 1 && (
         <div className="vx-card p-8 space-y-6">
           <div>
-            <h2 className="text-lg font-bold text-ink-900 mb-1">Identify Patient</h2>
-            <p className="text-sm text-ink-500">Enter the patient's membership ID or email address.</p>
+            <h2 className="text-lg font-bold text-ink-900 dark:text-gray-100 mb-1">Identify Patient</h2>
+            <p className="text-sm text-ink-500 dark:text-gray-400">Enter the patient's membership ID or email address.</p>
           </div>
 
           <div className="flex gap-2">
@@ -302,7 +302,7 @@ export default function CaptureReading() {
           {/* Search Results List */}
           {searchResults.length > 0 && !patient && (
             <div className="border border-ink-200 rounded-xl divide-y divide-ink-100 overflow-hidden">
-              <div className="px-4 py-2 bg-ink-50 text-xs font-semibold text-ink-500">Select a Patient ({searchResults.length} found)</div>
+              <div className="px-4 py-2 bg-ink-50 text-xs font-semibold text-ink-500 dark:text-gray-400">Select a Patient ({searchResults.length} found)</div>
               {searchResults.map((p) => (
                 <button key={p._id} onClick={() => { setPatient(p); setSearchResults([]); }}
                   className="w-full text-left px-4 py-3 flex items-center gap-3 hover:bg-teal-50 transition-colors">
@@ -310,8 +310,8 @@ export default function CaptureReading() {
                     {getInitials(p.name)}
                   </div>
                   <div>
-                    <p className="font-semibold text-ink-800 text-sm">{p.name}</p>
-                    <p className="text-xs text-ink-500 font-mono">{p.memberId} {p.age ? `· ${p.age} yrs` : ''}</p>
+                    <p className="font-semibold text-ink-800 dark:text-gray-200 text-sm">{p.name}</p>
+                    <p className="text-xs text-ink-500 dark:text-gray-400 font-mono">{p.memberId} {p.age ? `· ${p.age} yrs` : ''}</p>
                   </div>
                 </button>
               ))}
@@ -322,24 +322,24 @@ export default function CaptureReading() {
           {showAddPatient && (
             <div className="p-5 bg-ink-50 border border-ink-200 rounded-xl space-y-4 animate-fade-in">
               <div className="flex items-center justify-between">
-                <h3 className="text-sm font-bold text-ink-900">Add New Patient</h3>
-                <button onClick={() => setShowAddPatient(false)} className="text-ink-400 hover:text-ink-600">
+                <h3 className="text-sm font-bold text-ink-900 dark:text-gray-100 ">Add New Patient</h3>
+                <button onClick={() => setShowAddPatient(false)} className="text-ink-400 hover:text-ink-600 dark:text-gray-300">
                   <X size={16} />
                 </button>
               </div>
               <div className="grid grid-cols-2 gap-3">
                 <div className="col-span-2">
-                  <label className="block text-xs font-medium text-ink-600 mb-1">Full Name *</label>
+                  <label className="block text-xs font-medium text-ink-600 dark:text-gray-300 mb-1">Full Name *</label>
                   <input value={newPatient.name} onChange={(e) => setNewPatient({ ...newPatient, name: e.target.value })}
                     className={inputCls} placeholder="e.g. John Doe" />
                 </div>
                 <div>
-                  <label className="block text-xs font-medium text-ink-600 mb-1">Membership ID *</label>
+                  <label className="block text-xs font-medium text-ink-600 dark:text-gray-300 mb-1">Membership ID *</label>
                   <input value={newPatient.memberId} onChange={(e) => setNewPatient({ ...newPatient, memberId: e.target.value })}
                     className={inputCls} placeholder="e.g. VX-001" />
                 </div>
                 <div>
-                  <label className="block text-xs font-medium text-ink-600 mb-1">Email</label>
+                  <label className="block text-xs font-medium text-ink-600 dark:text-gray-300 mb-1">Email</label>
                   <input value={newPatient.email} onChange={(e) => setNewPatient({ ...newPatient, email: e.target.value })}
                     className={inputCls} placeholder="Optional" />
                 </div>
@@ -360,8 +360,8 @@ export default function CaptureReading() {
                 {getInitials(patient.name)}
               </div>
               <div className="flex-1">
-                <p className="font-semibold text-ink-800">{patient.name}</p>
-                <p className="text-xs text-ink-500 font-mono">
+                <p className="font-semibold text-ink-800 dark:text-gray-200">{patient.name}</p>
+                <p className="text-xs text-ink-500 dark:text-gray-400 font-mono">
                   {patient.memberId || patient.email} {patient.age ? `· ${patient.age} yrs` : ''} {patient.gender ? `· ${patient.gender}` : ''}
                 </p>
               </div>
@@ -386,8 +386,8 @@ export default function CaptureReading() {
       {step === 2 && (
         <div className="vx-card p-8 space-y-6">
           <div>
-            <h2 className="text-lg font-bold text-ink-900 mb-1">BMI Entry <span className="text-ink-400 font-normal text-sm">(optional)</span></h2>
-            <p className="text-sm text-ink-500">Record patient's weight and height to calculate BMI.</p>
+            <h2 className="text-lg font-bold text-ink-900 dark:text-gray-100 mb-1">BMI Entry <span className="text-ink-400 font-normal text-sm">(optional)</span></h2>
+            <p className="text-sm text-ink-500 dark:text-gray-400">Record patient's weight and height to calculate BMI.</p>
           </div>
 
           {patient && (
@@ -399,12 +399,12 @@ export default function CaptureReading() {
 
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <label className="block text-xs font-medium text-ink-600 mb-1.5">Weight (kg)</label>
+              <label className="block text-xs font-medium text-ink-600 dark:text-gray-300 mb-1.5">Weight (kg)</label>
               <input type="number" value={weight} onChange={(e) => { setWeight(e.target.value); setBmi(null); }}
                 placeholder="e.g. 75" min="10" max="300" className={inputCls} />
             </div>
             <div>
-              <label className="block text-xs font-medium text-ink-600 mb-1.5">Height (cm)</label>
+              <label className="block text-xs font-medium text-ink-600 dark:text-gray-300 mb-1.5">Height (cm)</label>
               <input type="number" value={height} onChange={(e) => { setHeight(e.target.value); setBmi(null); }}
                 placeholder="e.g. 175" min="50" max="250" className={inputCls} />
             </div>
@@ -419,13 +419,13 @@ export default function CaptureReading() {
             <div className={`p-4 rounded-xl border text-center ${bmi.bg} ${bmi.border}`}>
               <p className={`text-3xl font-bold ${bmi.color}`}>{bmi.value}</p>
               <p className={`text-sm font-semibold mt-1 ${bmi.color}`}>{bmi.label}</p>
-              <p className="text-xs text-ink-500 mt-1">{weight}kg / {height}cm</p>
+              <p className="text-xs text-ink-500 dark:text-gray-400 mt-1">{weight}kg / {height}cm</p>
             </div>
           )}
 
           <div className="flex gap-3">
             <button onClick={() => setStep(1)}
-              className="flex-1 py-2.5 rounded-xl border border-ink-200 text-sm text-ink-600 hover:bg-ink-50 transition-colors">
+              className="flex-1 py-2.5 rounded-xl border border-ink-200 text-sm text-ink-600 dark:text-gray-300 hover:bg-ink-50 transition-colors">
               Back
             </button>
             <button onClick={() => setStep(3)}
@@ -456,7 +456,7 @@ export default function CaptureReading() {
                   {waiting ? (
                     <Wifi size={40} className="text-teal-400 animate-pulse" />
                   ) : (
-                    <Heart size={40} className="text-ink-500" />
+                    <Heart size={40} className="text-ink-500 dark:text-gray-400" />
                   )}
                 </div>
 
@@ -495,7 +495,7 @@ export default function CaptureReading() {
                   </label>
                   <input type="number" value={spo2} onChange={(e) => setSpo2(e.target.value)}
                     placeholder="e.g. 97" min="70" max="100"
-                    className="w-full px-3 py-2.5 text-sm bg-ink-800 border border-ink-700 text-white rounded-xl focus:outline-none focus:ring-2 focus:ring-teal-500/50 placeholder:text-ink-500" />
+                    className="w-full px-3 py-2.5 text-sm bg-ink-800 border border-ink-700 text-white rounded-xl focus:outline-none focus:ring-2 focus:ring-teal-500/50 placeholder:text-ink-500 dark:text-gray-400" />
                 </div>
                 <div>
                   <label className="block text-xs font-semibold text-ink-300 mb-1.5">
@@ -503,7 +503,7 @@ export default function CaptureReading() {
                   </label>
                   <input type="number" value={hr} onChange={(e) => setHr(e.target.value)}
                     placeholder="e.g. 72" min="30" max="250"
-                    className="w-full px-3 py-2.5 text-sm bg-ink-800 border border-ink-700 text-white rounded-xl focus:outline-none focus:ring-2 focus:ring-teal-500/50 placeholder:text-ink-500" />
+                    className="w-full px-3 py-2.5 text-sm bg-ink-800 border border-ink-700 text-white rounded-xl focus:outline-none focus:ring-2 focus:ring-teal-500/50 placeholder:text-ink-500 dark:text-gray-400" />
                 </div>
               </div>
 
@@ -521,7 +521,7 @@ export default function CaptureReading() {
           )}
 
           <button onClick={() => { stopListening(); setStep(2); }}
-            className="text-ink-500 hover:text-ink-300 text-xs transition-colors w-full text-center">
+            className="text-ink-500 dark:text-gray-400 hover:text-ink-300 text-xs transition-colors w-full text-center">
             ← Back to BMI entry
           </button>
         </div>
@@ -537,17 +537,17 @@ export default function CaptureReading() {
 
             <div className="grid grid-cols-2 gap-6 mb-4">
               <div>
-                <p className="text-4xl font-bold text-ink-900">{reading.spo2}%</p>
-                <p className="text-sm text-ink-500 mt-1">SpO₂ — Oxygen Saturation</p>
+                <p className="text-4xl font-bold text-ink-900 dark:text-gray-100 ">{reading.spo2}%</p>
+                <p className="text-sm text-ink-500 dark:text-gray-400 mt-1">SpO₂ — Oxygen Saturation</p>
               </div>
               <div>
-                <p className="text-4xl font-bold text-ink-900">{reading.hr}</p>
-                <p className="text-sm text-ink-500 mt-1">Heart Rate (bpm)</p>
+                <p className="text-4xl font-bold text-ink-900 dark:text-gray-100 ">{reading.hr}</p>
+                <p className="text-sm text-ink-500 dark:text-gray-400 mt-1">Heart Rate (bpm)</p>
               </div>
             </div>
 
-            {bmi && <p className="text-sm text-ink-600 mb-2">BMI: <strong>{bmi.value}</strong> — {bmi.label}</p>}
-            <p className="text-sm font-medium text-ink-700 bg-white/60 rounded-xl px-4 py-2 inline-block">{resultStyle.action}</p>
+            {bmi && <p className="text-sm text-ink-600 dark:text-gray-300 mb-2">BMI: <strong>{bmi.value}</strong> — {bmi.label}</p>}
+            <p className="text-sm font-medium text-ink-700 bg-white dark:bg-ink-800 /60 rounded-xl px-4 py-2 inline-block">{resultStyle.action}</p>
           </div>
 
           {reading.status === 'CRITICAL' && (
@@ -580,7 +580,7 @@ export default function CaptureReading() {
 
           <div className="flex gap-3">
             <button onClick={reset}
-              className="flex-1 flex items-center justify-center gap-2 py-3 rounded-xl border border-ink-200 text-sm font-semibold text-ink-600 hover:bg-ink-50 transition-colors">
+              className="flex-1 flex items-center justify-center gap-2 py-3 rounded-xl border border-ink-200 text-sm font-semibold text-ink-600 dark:text-gray-300 hover:bg-ink-50 transition-colors">
               <RotateCcw size={15} /> New Reading
             </button>
             <button onClick={() => navigate('/provider/dashboard')}

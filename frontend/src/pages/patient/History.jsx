@@ -163,26 +163,26 @@ export default function PatientHistory() {
         ].map((s) => (
           <div
             key={s.label}
-            className="bg-white rounded-xl border border-gray-100 shadow-sm p-4 text-center"
+            className="bg-white dark:bg-ink-800 rounded-xl border border-gray-100 dark:border-ink-700 shadow-sm p-4 text-center"
           >
             <p className={`text-2xl font-bold ${s.color}`}>{s.value}</p>
-            <p className="text-xs text-gray-500 mt-0.5">{s.label}</p>
+            <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">{s.label}</p>
           </div>
         ))}
       </div>
 
       {/* Full chart */}
-      <div className="bg-white rounded-xl border border-gray-100 shadow-sm">
-        <div className="px-6 py-4 border-b border-gray-100 flex items-center justify-between">
+      <div className="bg-white dark:bg-ink-800 rounded-xl border border-gray-100 dark:border-ink-700 shadow-sm">
+        <div className="px-6 py-4 border-b border-gray-100 dark:border-ink-700 flex items-center justify-between">
           <div>
-            <h3 className="text-base font-semibold text-gray-800">
+            <h3 className="text-base font-semibold text-gray-800 dark:text-gray-100 ">
               HR & SpO2 History
             </h3>
-            <p className="text-xs text-gray-500 mt-0.5">
+            <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">
               Showing last {chartData.length} readings
             </p>
           </div>
-          <div className="flex items-center gap-4 text-xs text-gray-500">
+          <div className="flex items-center gap-4 text-xs text-gray-500 dark:text-gray-400">
             <span className="flex items-center gap-1.5">
               <span className="w-4 h-0.5 bg-red-400 inline-block rounded" />{" "}
               Heart Rate
@@ -198,10 +198,10 @@ export default function PatientHistory() {
               data={chartData}
               margin={{ top: 5, right: 20, left: 0, bottom: 5 }}
             >
-              <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" />
+              <CartesianGrid strokeDasharray="3 3" stroke="#cbd5e1" />
               <XAxis
                 dataKey="time"
-                tick={{ fontSize: 10, fill: "#94a3b8" }}
+                tick={{ fontSize: 10, fill: "#64748b" }}
                 interval="preserveStartEnd"
                 tickLine={false}
                 axisLine={false}
@@ -209,7 +209,7 @@ export default function PatientHistory() {
               <YAxis
                 yAxisId="left"
                 domain={[40, 150]}
-                tick={{ fontSize: 10, fill: "#94a3b8" }}
+                tick={{ fontSize: 10, fill: "#64748b" }}
                 tickLine={false}
                 axisLine={false}
                 width={28}
@@ -218,7 +218,7 @@ export default function PatientHistory() {
                 yAxisId="right"
                 orientation="right"
                 domain={[85, 102]}
-                tick={{ fontSize: 10, fill: "#94a3b8" }}
+                tick={{ fontSize: 10, fill: "#64748b" }}
                 tickLine={false}
                 axisLine={false}
                 width={28}
@@ -250,11 +250,11 @@ export default function PatientHistory() {
       </div>
 
       {/* Filters */}
-      <div className="bg-white rounded-xl border border-gray-100 shadow-sm p-4">
+      <div className="bg-white dark:bg-ink-800 rounded-xl border border-gray-100 dark:border-ink-700 shadow-sm p-4">
         <div className="flex flex-wrap items-center gap-3">
           <div className="flex items-center gap-2">
             <Filter size={14} className="text-gray-400" />
-            <span className="text-xs font-medium text-gray-600">
+            <span className="text-xs font-medium text-gray-600 dark:text-gray-300">
               Filter readings:
             </span>
           </div>
@@ -263,14 +263,14 @@ export default function PatientHistory() {
             type="date"
             value={dateFrom}
             onChange={(e) => setDateFrom(e.target.value)}
-            className="text-xs border border-gray-200 rounded-lg px-2 py-1.5 focus:outline-none focus:ring-2 focus:ring-brand/30"
+            className="text-xs bg-white dark:bg-ink-900 dark:text-gray-100 border border-gray-200 dark:border-ink-600 rounded-lg px-2 py-1.5 focus:outline-none focus:ring-2 focus:ring-blue-500/30"
           />
           <span className="text-gray-400 text-xs">to</span>
           <input
             type="date"
             value={dateTo}
             onChange={(e) => setDateTo(e.target.value)}
-            className="text-xs border border-gray-200 rounded-lg px-2 py-1.5 focus:outline-none focus:ring-2 focus:ring-brand/30"
+            className="text-xs bg-white dark:bg-ink-900 dark:text-gray-100 border border-gray-200 dark:border-ink-600 rounded-lg px-2 py-1.5 focus:outline-none focus:ring-2 focus:ring-blue-500/30"
           />
 
           <div className="flex gap-1">
@@ -278,10 +278,13 @@ export default function PatientHistory() {
               <button
                 key={f}
                 onClick={() => setStatusFilter(f)}
-                className={`px-2.5 py-1 rounded-lg text-[10px] font-bold transition-colors ${
+                className={`px-2.5 py-1 rounded-lg text-[10px] font-bold transition-all ${
                   statusFilter === f
-                    ? "bg-brand text-white"
-                    : "bg-gray-100 text-gray-500 hover:bg-gray-200"
+                    ? f === "CRITICAL" ? "bg-coral-500 text-white shadow-sm"
+                      : f === "WARNING" ? "bg-orange-500 text-white shadow-sm"
+                      : f === "NORMAL" ? "bg-teal-500 text-white shadow-sm"
+                      : "bg-blue-500 text-white shadow-sm"
+                    : "bg-gray-100 dark:bg-ink-700 text-gray-500 dark:text-gray-400 hover:bg-gray-200 dark:hover:bg-ink-600"
                 }`}
               >
                 {f}
@@ -305,15 +308,15 @@ export default function PatientHistory() {
       </div>
 
       {/* Readings table */}
-      <div className="bg-white rounded-xl border border-gray-100 shadow-sm overflow-hidden">
+      <div className="bg-white dark:bg-ink-800 rounded-xl border border-gray-100 dark:border-ink-700 shadow-sm overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full min-w-[480px]">
             <thead>
-              <tr className="bg-gray-50/80">
+              <tr className="bg-gray-50 dark:bg-ink-900/80">
                 {["Date & Time", "SpO2", "Heart Rate", "Status"].map((h) => (
                   <th
                     key={h}
-                    className="text-left text-xs font-semibold text-gray-500 uppercase tracking-wide px-6 py-3"
+                    className="text-left text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wide px-6 py-3"
                   >
                     {h}
                   </th>
@@ -327,10 +330,10 @@ export default function PatientHistory() {
                 .map((r) => (
                   <tr
                     key={r._id}
-                    className="hover:bg-gray-50/50 transition-colors"
+                    className="hover:bg-gray-50 dark:bg-ink-900/50 transition-colors"
                   >
-                    <td className="px-6 py-3 text-xs text-gray-500">
-                      <span className="font-medium text-gray-700">
+                    <td className="px-6 py-3 text-xs text-gray-500 dark:text-gray-400">
+                      <span className="font-medium text-gray-700 dark:text-gray-200">
                         {r.date}
                       </span>
                       <span className="ml-2 font-mono">{r.time}</span>
@@ -338,7 +341,7 @@ export default function PatientHistory() {
                     <td className="px-6 py-3">
                       <div className="flex items-center gap-2">
                         <Activity size={13} className="text-brand" />
-                        <span className="text-sm font-bold text-gray-700">
+                        <span className="text-sm font-bold text-gray-700 dark:text-gray-200">
                           {r.spo2}%
                         </span>
                       </div>
@@ -346,7 +349,7 @@ export default function PatientHistory() {
                     <td className="px-6 py-3">
                       <div className="flex items-center gap-2">
                         <Heart size={13} className="text-red-400" />
-                        <span className="text-sm font-bold text-gray-700">
+                        <span className="text-sm font-bold text-gray-700 dark:text-gray-200">
                           {r.hr} bpm
                         </span>
                       </div>

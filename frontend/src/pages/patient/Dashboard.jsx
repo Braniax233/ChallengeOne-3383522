@@ -315,8 +315,8 @@ export default function PatientDashboard() {
   return (
     <div className="space-y-6">
       {/* Welcome */}
-      <div className="bg-ink-900 rounded-2xl p-6 text-white">
-        <p className="text-slate-400 text-sm mb-0.5">
+      <div className="bg-white dark:bg-ink-800 border border-gray-100 dark:border-ink-700 shadow-sm rounded-2xl p-6 text-gray-800 dark:text-gray-100">
+        <p className="text-gray-500 dark:text-gray-400 text-sm mb-0.5">
           {new Date().toLocaleDateString([], {
             weekday: "long",
             month: "long",
@@ -326,9 +326,9 @@ export default function PatientDashboard() {
         <h2 className="text-xl font-bold">
           Hello, {patient?.name || user?.name || "Patient"}
         </h2>
-        <p className="text-slate-400 text-sm mt-1">
+        <p className="text-gray-500 dark:text-gray-400 text-sm mt-1">
           Membership ID:{" "}
-          <span className="font-mono text-slate-300">
+          <span className="font-mono text-gray-700 dark:text-gray-300">
             {patient?.memberId || user?.memberId || "—"}
           </span>
         </p>
@@ -356,84 +356,25 @@ export default function PatientDashboard() {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* ── Main column ──────────────────────────────────────────────────────── */}
         <div className="lg:col-span-2 space-y-6">
-          {/* ── Live Sensor Card ──────────────────────────────────────────── */}
-          <div className="bg-white rounded-xl border border-gray-100 shadow-sm p-5">
-            <div className="flex items-center justify-between mb-4">
-              <div className="flex items-center gap-2">
-                <div
-                  className={`p-1.5 rounded-lg ${
-                    sensorOnline ? "bg-green-100" : "bg-gray-100"
-                  }`}
-                >
-                  {sensorOnline ? (
-                    <Wifi size={14} className="text-green-600" />
-                  ) : (
-                    <WifiOff size={14} className="text-gray-400" />
-                  )}
-                </div>
-                <h3 className="text-sm font-semibold text-gray-800">
-                  Live Sensor
-                </h3>
-              </div>
-              <span
-                className={`text-xs font-medium px-2 py-0.5 rounded-full ${
-                  sensorOnline
-                    ? "bg-green-100 text-green-700"
-                    : "bg-gray-100 text-gray-500"
-                }`}
-              >
-                {sensorOnline ? "● Online" : "○ Offline"}
-              </span>
-            </div>
-
-            {liveVitals ? (
-              <div className="grid grid-cols-2 gap-4">
-                <div className="text-center p-3 bg-red-50 rounded-xl border border-red-100">
-                  <p className="text-xs text-gray-500 mb-1 flex items-center justify-center gap-1">
-                    <Heart size={11} className="text-red-500" /> Heart Rate
-                  </p>
-                  <p className="text-3xl font-bold text-gray-800">
-                    {liveVitals.heartRate}
-                  </p>
-                  <p className="text-xs text-gray-500">bpm</p>
-                </div>
-                <div className="text-center p-3 bg-blue-50 rounded-xl border border-blue-100">
-                  <p className="text-xs text-gray-500 mb-1 flex items-center justify-center gap-1">
-                    <Activity size={11} className="text-brand" /> SpO2
-                  </p>
-                  <p className="text-3xl font-bold text-gray-800">
-                    {liveVitals.spo2}
-                  </p>
-                  <p className="text-xs text-gray-500">%</p>
-                </div>
-              </div>
-            ) : (
-              <p className="text-xs text-gray-400 text-center py-4">
-                {sensorOnline
-                  ? "Waiting for sensor data…"
-                  : "Place your finger on the sensor to begin."}
-              </p>
-            )}
-          </div>
 
           {/* Vital cards */}
           <div className="grid grid-cols-2 gap-4">
             {/* SpO2 */}
-            <div className="bg-white rounded-xl border border-gray-100 shadow-sm p-5">
+            <div className="bg-white dark:bg-ink-800 rounded-xl border border-gray-100 dark:border-ink-700 shadow-sm p-5 transition-all duration-300 hover:-translate-y-1 hover:shadow-lg">
               <div className="flex items-center justify-between mb-3">
                 <div className="flex items-center gap-2">
                   <div className="p-1.5 bg-blue-100 rounded-lg">
                     <Activity size={14} className="text-brand" />
                   </div>
-                  <span className="text-sm font-medium text-gray-600">
+                  <span className="text-sm font-medium text-gray-600 dark:text-gray-300">
                     SpO2
                   </span>
                 </div>
                 <StatusBadge status={status} />
               </div>
               <div className="flex items-end gap-1 mb-3">
-                <p className="text-4xl font-bold text-gray-800">{latestSpo2}</p>
-                <p className="text-lg text-gray-500 mb-1">%</p>
+                <p className="text-4xl font-bold text-gray-800 dark:text-gray-100 ">{latestSpo2}</p>
+                <p className="text-lg text-gray-500 dark:text-gray-400 mb-1">%</p>
               </div>
               <div className="h-12">
                 <SparklineChart data={spo2Data} color="#3b82f6" tooltip />
@@ -441,21 +382,21 @@ export default function PatientDashboard() {
             </div>
 
             {/* HR */}
-            <div className="bg-white rounded-xl border border-gray-100 shadow-sm p-5">
+            <div className="bg-white dark:bg-ink-800 rounded-xl border border-gray-100 dark:border-ink-700 shadow-sm p-5 transition-all duration-300 hover:-translate-y-1 hover:shadow-lg">
               <div className="flex items-center justify-between mb-3">
                 <div className="flex items-center gap-2">
                   <div className="p-1.5 bg-red-100 rounded-lg">
                     <Heart size={14} className="text-red-500" />
                   </div>
-                  <span className="text-sm font-medium text-gray-600">
+                  <span className="text-sm font-medium text-gray-600 dark:text-gray-300">
                     Heart Rate
                   </span>
                 </div>
                 <StatusBadge status={status} />
               </div>
               <div className="flex items-end gap-1 mb-3">
-                <p className="text-4xl font-bold text-gray-800">{latestHr}</p>
-                <p className="text-sm text-gray-500 mb-1">bpm</p>
+                <p className="text-4xl font-bold text-gray-800 dark:text-gray-100 ">{latestHr}</p>
+                <p className="text-sm text-gray-500 dark:text-gray-400 mb-1">bpm</p>
               </div>
               <div className="h-12">
                 <SparklineChart data={hrData} color="#ef4444" tooltip />
@@ -464,12 +405,12 @@ export default function PatientDashboard() {
           </div>
 
           {/* Sparkline history chart */}
-          <div className="bg-white rounded-xl border border-gray-100 shadow-sm">
-            <div className="px-6 py-4 border-b border-gray-100 flex items-center justify-between">
-              <h3 className="text-sm font-semibold text-gray-800">
+          <div className="bg-white dark:bg-ink-800 rounded-xl border border-gray-100 dark:border-ink-700 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-lg">
+            <div className="px-6 py-4 border-b border-gray-100 dark:border-ink-700 flex items-center justify-between">
+              <h3 className="text-sm font-semibold text-gray-800 dark:text-gray-100 ">
                 Recent Activity
               </h3>
-              <div className="flex items-center gap-4 text-xs text-gray-500">
+              <div className="flex items-center gap-4 text-xs text-gray-500 dark:text-gray-400">
                 <span className="flex items-center gap-1.5">
                   <span className="w-3 h-0.5 bg-red-400 inline-block rounded" />{" "}
                   HR
@@ -486,10 +427,10 @@ export default function PatientDashboard() {
                   data={history}
                   margin={{ top: 5, right: 10, left: 0, bottom: 5 }}
                 >
-                  <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" />
+                  <CartesianGrid strokeDasharray="3 3" stroke="#cbd5e1" />
                   <XAxis
                     dataKey="time"
-                    tick={{ fontSize: 10, fill: "#94a3b8" }}
+                    tick={{ fontSize: 10, fill: "#64748b" }}
                     interval="preserveStartEnd"
                     tickLine={false}
                     axisLine={false}
@@ -497,7 +438,7 @@ export default function PatientDashboard() {
                   <YAxis
                     yAxisId="left"
                     domain={[40, 150]}
-                    tick={{ fontSize: 10, fill: "#94a3b8" }}
+                    tick={{ fontSize: 10, fill: "#64748b" }}
                     tickLine={false}
                     axisLine={false}
                     width={28}
@@ -506,7 +447,7 @@ export default function PatientDashboard() {
                     yAxisId="right"
                     orientation="right"
                     domain={[85, 102]}
-                    tick={{ fontSize: 10, fill: "#94a3b8" }}
+                    tick={{ fontSize: 10, fill: "#64748b" }}
                     tickLine={false}
                     axisLine={false}
                     width={28}
@@ -538,19 +479,19 @@ export default function PatientDashboard() {
           </div>
 
           {/* BMI Calculator */}
-          <div className="bg-white rounded-xl border border-gray-100 shadow-sm p-6">
+          <div className="bg-white dark:bg-ink-800 rounded-xl border border-gray-100 dark:border-ink-700 shadow-sm p-6 transition-all duration-300 hover:-translate-y-1 hover:shadow-lg">
             <div className="flex items-center gap-2 mb-4">
               <div className="p-1.5 bg-violet-100 rounded-lg">
                 <Calculator size={14} className="text-violet-600" />
               </div>
-              <h3 className="text-sm font-semibold text-gray-800">
+              <h3 className="text-sm font-semibold text-gray-800 dark:text-gray-100 ">
                 BMI Calculator
               </h3>
             </div>
 
             <div className="grid grid-cols-2 gap-3 mb-3">
               <div>
-                <label className="block text-xs font-medium text-gray-500 mb-1">
+                <label className="block text-xs font-medium text-gray-500 dark:text-gray-400 mb-1">
                   Weight (kg)
                 </label>
                 <input
@@ -561,11 +502,11 @@ export default function PatientDashboard() {
                     setBmiResult(null);
                   }}
                   placeholder="e.g. 70"
-                  className="w-full px-3 py-2 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-brand/30 focus:border-brand"
+                  className="w-full px-3 py-2 text-sm border border-gray-200 dark:border-ink-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-brand/30 focus:border-brand"
                 />
               </div>
               <div>
-                <label className="block text-xs font-medium text-gray-500 mb-1">
+                <label className="block text-xs font-medium text-gray-500 dark:text-gray-400 mb-1">
                   Height (cm)
                 </label>
                 <input
@@ -576,7 +517,7 @@ export default function PatientDashboard() {
                     setBmiResult(null);
                   }}
                   placeholder="e.g. 175"
-                  className="w-full px-3 py-2 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-brand/30 focus:border-brand"
+                  className="w-full px-3 py-2 text-sm border border-gray-200 dark:border-ink-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-brand/30 focus:border-brand"
                 />
               </div>
             </div>
@@ -584,7 +525,7 @@ export default function PatientDashboard() {
             <button
               onClick={handleCalculateBMI}
               disabled={!bmiWeight || !bmiHeight || savingBmi}
-              className="w-full py-2 bg-violet-600 text-white text-sm font-semibold rounded-lg hover:bg-violet-700 transition-colors disabled:opacity-40 mb-3 flex items-center justify-center gap-2"
+              className="w-full py-2 bg-gradient-to-r from-violet-500 to-violet-600 shadow-md text-white text-sm font-semibold rounded-lg hover:from-violet-600 hover:to-violet-700 hover:shadow-lg transition-all duration-300 disabled:opacity-40 mb-3 flex items-center justify-center gap-2"
             >
               {savingBmi ? <LoadingSpinner size="14px" /> : null}
               {savingBmi ? "Saving..." : "Calculate & Save BMI"}
@@ -600,7 +541,7 @@ export default function PatientDashboard() {
                 <p className={`text-sm font-semibold mt-1 ${bmiResult.color}`}>
                   {bmiResult.label}
                 </p>
-                <p className="text-xs text-gray-500 mt-1">
+                <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
                   {bmiResult.label === "Normal"
                     ? "✓ Healthy weight range"
                     : bmiResult.label === "Underweight"
@@ -626,13 +567,13 @@ export default function PatientDashboard() {
           />
 
           {/* Emergency contacts */}
-          <div className="bg-white rounded-xl border border-gray-100 shadow-sm p-5">
+          <div className="bg-white dark:bg-ink-800 rounded-xl border border-gray-100 dark:border-ink-700 shadow-sm p-5">
             <div className="flex items-center justify-between mb-4">
               <div className="flex items-center gap-2">
                 <div className="p-1.5 bg-red-100 rounded-lg">
                   <Phone size={14} className="text-red-500" />
                 </div>
-                <h3 className="text-sm font-semibold text-gray-800">
+                <h3 className="text-sm font-semibold text-gray-800 dark:text-gray-100 ">
                   Emergency Contacts
                 </h3>
               </div>
@@ -642,12 +583,12 @@ export default function PatientDashboard() {
             </div>
             
             {showAddContact && (
-              <div className="mb-4 p-3 bg-gray-50 border border-gray-100 rounded-xl space-y-2">
+              <div className="mb-4 p-3 bg-gray-50 dark:bg-ink-900 border border-gray-100 dark:border-ink-700 rounded-xl space-y-2">
                 <input placeholder="Name" value={newContact.name} onChange={e => setNewContact({...newContact, name: e.target.value})} className="w-full px-2 py-1.5 text-xs border rounded-lg focus:outline-none focus:border-brand" />
                 <input placeholder="Role (e.g. Spouse)" value={newContact.role} onChange={e => setNewContact({...newContact, role: e.target.value})} className="w-full px-2 py-1.5 text-xs border rounded-lg focus:outline-none focus:border-brand" />
                 <input placeholder="Phone" value={newContact.phone} onChange={e => setNewContact({...newContact, phone: e.target.value})} className="w-full px-2 py-1.5 text-xs border rounded-lg focus:outline-none focus:border-brand" />
                 <div className="flex justify-end gap-2 mt-2">
-                  <button onClick={() => setShowAddContact(false)} className="px-3 py-1 text-xs text-gray-500 hover:bg-gray-200 rounded-lg">Cancel</button>
+                  <button onClick={() => setShowAddContact(false)} className="px-3 py-1 text-xs text-gray-500 dark:text-gray-400 hover:bg-gray-200 rounded-lg">Cancel</button>
                   <button onClick={handleAddContact} disabled={savingContact} className="px-3 py-1 text-xs bg-brand text-white hover:bg-brand-600 rounded-lg">Save</button>
                 </div>
               </div>
@@ -658,12 +599,12 @@ export default function PatientDashboard() {
                 Object.entries(patient.emergencyContacts).map(([id, c]) => (
                   <div
                     key={id}
-                    className="p-3 bg-gray-50 rounded-xl border border-gray-100 relative group"
+                    className="p-3 bg-gray-50 dark:bg-ink-900 rounded-xl border border-gray-100 dark:border-ink-700 relative group"
                   >
-                    <p className="text-sm font-semibold text-gray-800">
+                    <p className="text-sm font-semibold text-gray-800 dark:text-gray-100 ">
                       {c.name}
                     </p>
-                    <p className="text-xs text-gray-500">{c.role}</p>
+                    <p className="text-xs text-gray-500 dark:text-gray-400">{c.role}</p>
                     <a
                       href={`tel:${c.phone}`}
                       className="text-xs text-brand hover:underline font-medium mt-0.5 flex items-center gap-1"
@@ -676,19 +617,19 @@ export default function PatientDashboard() {
                   </div>
                 ))
               ) : (
-                <p className="text-xs text-gray-500 text-center py-2">No emergency contacts added.</p>
+                <p className="text-xs text-gray-500 dark:text-gray-400 text-center py-2">No emergency contacts added.</p>
               )}
             </div>
           </div>
 
           {/* Location sharing */}
-          <div className="bg-white rounded-xl border border-gray-100 shadow-sm p-5">
+          <div className="bg-white dark:bg-ink-800 rounded-xl border border-gray-100 dark:border-ink-700 shadow-sm p-5">
             <div className="flex items-center justify-between mb-2">
               <div className="flex items-center gap-2">
                 <div className="p-1.5 bg-green-100 rounded-lg">
                   <MapPin size={14} className="text-green-600" />
                 </div>
-                <h3 className="text-sm font-semibold text-gray-800">
+                <h3 className="text-sm font-semibold text-gray-800 dark:text-gray-100 ">
                   Location Sharing
                 </h3>
               </div>
@@ -700,11 +641,11 @@ export default function PatientDashboard() {
                 aria-checked={locConsent}
               >
                 <span
-                  className={`inline-block h-3.5 w-3.5 rounded-full bg-white shadow transition-transform ${locConsent ? "translate-x-4" : "translate-x-0.5"}`}
+                  className={`inline-block h-3.5 w-3.5 rounded-full bg-white dark:bg-ink-800 shadow transition-transform ${locConsent ? "translate-x-4" : "translate-x-0.5"}`}
                 />
               </button>
             </div>
-            <p className="text-xs text-gray-500 leading-relaxed">
+            <p className="text-xs text-gray-500 dark:text-gray-400 leading-relaxed">
               {locConsent
                 ? "Your location is being shared with your care team for emergency use."
                 : "Enable to share your location with your care team in emergencies."}
@@ -712,29 +653,29 @@ export default function PatientDashboard() {
           </div>
 
           {/* Quick vitals summary */}
-          <div className="bg-white rounded-xl border border-gray-100 shadow-sm p-5">
-            <h3 className="text-sm font-semibold text-gray-800 mb-4">
+          <div className="bg-white dark:bg-ink-800 rounded-xl border border-gray-100 dark:border-ink-700 shadow-sm p-5 transition-all duration-300 hover:-translate-y-1 hover:shadow-lg">
+            <h3 className="text-sm font-semibold text-gray-800 dark:text-gray-100 mb-4">
               Vitals Summary
             </h3>
             <div className="space-y-3">
               <div className="flex items-center justify-between">
-                <span className="text-xs text-gray-500">SpO2</span>
+                <span className="text-xs text-gray-500 dark:text-gray-400">SpO2</span>
                 <div className="flex items-center gap-2">
-                  <div className="w-20 h-1.5 bg-gray-100 rounded-full overflow-hidden">
+                  <div className="w-20 h-1.5 bg-gray-100 dark:bg-ink-700 rounded-full overflow-hidden">
                     <div
-                      className="h-full bg-brand rounded-full"
+                      className="h-full bg-blue-500 rounded-full"
                       style={{ width: `${latestSpo2}%` }}
                     />
                   </div>
-                  <span className="text-xs font-bold text-gray-700">
+                  <span className="text-xs font-bold text-gray-700 dark:text-gray-200">
                     {latestSpo2}%
                   </span>
                 </div>
               </div>
               <div className="flex items-center justify-between">
-                <span className="text-xs text-gray-500">Heart Rate</span>
+                <span className="text-xs text-gray-500 dark:text-gray-400">Heart Rate</span>
                 <div className="flex items-center gap-2">
-                  <div className="w-20 h-1.5 bg-gray-100 rounded-full overflow-hidden">
+                  <div className="w-20 h-1.5 bg-gray-100 dark:bg-ink-700 rounded-full overflow-hidden">
                     <div
                       className="h-full bg-red-400 rounded-full"
                       style={{
@@ -742,7 +683,7 @@ export default function PatientDashboard() {
                       }}
                     />
                   </div>
-                  <span className="text-xs font-bold text-gray-700">
+                  <span className="text-xs font-bold text-gray-700 dark:text-gray-200">
                     {latestHr} bpm
                   </span>
                 </div>

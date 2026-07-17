@@ -1,11 +1,16 @@
 /** @type {import('tailwindcss').Config} */
 export default {
   content: ["./index.html", "./src/**/*.{js,ts,jsx,tsx}"],
+  darkMode: "class",
   theme: {
     extend: {
+      fontFamily: {
+        sans: ['Inter', 'sans-serif'],
+      },
       colors: {
+        brand: "#2E66F6",         // Bespoke modern clinical blue
         // Design system — clean clinical light theme
-        surface: "#F4F6F8",       // page background
+        surface: "#F8FAFC",       // softer slate-50 background
         card:    "#FFFFFF",       // card background
         teal: {
           50:  "#EAF6F5",
@@ -13,7 +18,7 @@ export default {
           200: "#98D8D4",
           300: "#68C4BF",
           400: "#4BB3AD",
-          500: "#3AA49E",         // primary accent
+          500: "#3AA49E",         // keep teal for success/normal states
           600: "#2E9490",
           700: "#237F7A",
           800: "#1B6561",
@@ -29,20 +34,17 @@ export default {
           600: "#D43929",
         },
         ink: {
-          900: "#1A1D23",
-          800: "#2C3039",
-          700: "#454A56",
-          600: "#606570",
-          500: "#8B8F99",
-          400: "#B0B4BF",
-          300: "#CDD0D8",
-          200: "#E4E6EB",
-          100: "#F0F2F5",
-          50:  "#F8F9FA",
+          900: "#0F172A", // Deep rich slate instead of flat gray
+          800: "#1E293B",
+          700: "#334155",
+          600: "#475569",
+          500: "#64748B",
+          400: "#94A3B8",
+          300: "#CBD5E1",
+          200: "#E2E8F0",
+          100: "#F1F5F9",
+          50:  "#F8FAFC",
         },
-      },
-      fontFamily: {
-        sans: ["Inter", "ui-sans-serif", "system-ui", "sans-serif"],
       },
       borderRadius: {
         xl:  "12px",

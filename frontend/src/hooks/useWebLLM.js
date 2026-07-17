@@ -38,7 +38,7 @@ export default function useWebLLM() {
       setProgressText("");
     } catch (err) {
       console.error("WebLLM Init Error:", err);
-      setError("Failed to initialize the AI model. Check console for details.");
+      setError(`Failed to initialize the AI model: ${err.message || "Unknown error"}. Please check your connection or try again later.`);
     } finally {
       setIsInitializing(false);
     }

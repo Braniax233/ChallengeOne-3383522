@@ -12,7 +12,7 @@ export default function StatusBadge({ status = "" }) {
     NORMAL:    "bg-teal-50 text-teal-600",
     WARNING:   "bg-amber-50 text-amber-600",
     CRITICAL:  "bg-coral-50 text-coral-500",
-    RESOLVED:  "bg-ink-100 text-ink-500",
+    RESOLVED:  "bg-ink-100 text-ink-500 dark:text-gray-400",
     INFECTIOUS: "bg-coral-50 text-coral-500",
     "NOT INFECTIOUS": "bg-teal-50 text-teal-600",
   };
@@ -24,7 +24,7 @@ export default function StatusBadge({ status = "" }) {
     RESOLVED:  "Resolved",
   };
 
-  const cls = styles[s] ?? "bg-ink-100 text-ink-500";
+  const cls = styles[s] ?? "bg-ink-100 text-ink-500 dark:text-gray-400";
   const label = labels[s] ?? status;
 
   return (

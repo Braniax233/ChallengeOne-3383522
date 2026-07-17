@@ -131,18 +131,16 @@ export default function ClinicianLayout() {
   return (
     <div className="h-screen bg-surface flex flex-col overflow-hidden">
       {/* ── TOP NAVIGATION BAR ──────────────────────────────────────────────── */}
-      <header className="bg-white border-b border-ink-200 flex items-center px-6 py-3 gap-6 flex-shrink-0 z-30">
-        {/* Logo */}
+      <header className="bg-white/80 dark:bg-ink-900/80 backdrop-blur-md border-b border-gray-100 dark:border-ink-700 flex items-center px-6 py-3 gap-6 flex-shrink-0 z-30">
         <div className="flex items-center gap-2.5 flex-shrink-0">
-          <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-teal-400 to-teal-600 flex items-center justify-center shadow-sm">
+          <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-brand to-blue-600 flex items-center justify-center shadow-sm">
             <Activity size={18} className="text-white" />
           </div>
-          <span className="font-bold text-ink-900 text-lg tracking-tight hidden sm:block">
-            Vital<span className="text-teal-500">X</span>
+          <span className="font-bold text-gray-800 dark:text-gray-100 text-lg tracking-tight">
+            Vital<span className="text-brand">X</span> <span className="text-sm font-normal text-gray-500 dark:text-gray-400">Clinician</span>
           </span>
         </div>
 
-        {/* Nav tabs (Hidden on mobile) */}
         <nav className="hidden md:flex items-center gap-1 flex-1">
           {TOP_NAV.map((item) => (
             <NavLink
@@ -150,10 +148,8 @@ export default function ClinicianLayout() {
               to={item.to}
               end={item.end}
               className={({ isActive }) =>
-                `relative px-4 py-2 rounded-xl text-sm font-medium transition-all duration-150 flex items-center gap-1.5 ${
-                  isActive
-                    ? "bg-ink-900 text-white shadow-sm"
-                    : "text-ink-600 hover:bg-ink-100 hover:text-ink-900"
+                `relative flex items-center gap-1.5 px-4 py-2 rounded-xl text-sm font-medium transition-all duration-300 ${
+                  isActive ? "bg-brand text-white shadow-md" : "text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-ink-800 hover:text-gray-800 dark:hover:text-gray-100"
                 }`
               }
             >

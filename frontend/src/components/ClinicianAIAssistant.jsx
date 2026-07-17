@@ -64,7 +64,7 @@ Provide a concise, professional clinical assessment. Use medical terminology app
     return (
       <div className="bg-gradient-to-br from-teal-600 to-emerald-700 rounded-xl p-5 text-white shadow-sm border border-teal-500/30">
         <div className="flex items-center gap-3 mb-3">
-          <div className="w-10 h-10 rounded-full bg-white/20 flex items-center justify-center font-bold text-white tracking-widest text-sm">
+          <div className="w-10 h-10 rounded-full bg-white dark:bg-ink-800 /20 flex items-center justify-center font-bold text-white tracking-widest text-sm">
             AI
           </div>
           <div>
@@ -87,14 +87,14 @@ Provide a concise, professional clinical assessment. Use medical terminology app
               <Loader2 size={16} className="animate-spin" />
               <span>{progressText || "Loading..."}</span>
             </div>
-            <div className="h-1.5 w-full bg-white/20 rounded-full overflow-hidden">
-              <div className="h-full bg-white rounded-full animate-pulse w-full"></div>
+            <div className="h-1.5 w-full bg-white dark:bg-ink-800 /20 rounded-full overflow-hidden">
+              <div className="h-full bg-white dark:bg-ink-800 rounded-full animate-pulse w-full"></div>
             </div>
           </div>
         ) : (
           <button 
             onClick={init}
-            className="w-full flex items-center justify-center gap-2 bg-white text-teal-700 px-4 py-2.5 rounded-lg text-sm font-bold hover:bg-teal-50 transition-colors shadow-sm"
+            className="w-full flex items-center justify-center gap-2 bg-white dark:bg-ink-800 text-teal-700 px-4 py-2.5 rounded-lg text-sm font-bold hover:bg-teal-50 transition-colors shadow-sm"
           >
             <Download size={16} /> {isCached ? "Load Offline Clinical AI" : "Download Offline Clinical AI"}
           </button>
@@ -104,10 +104,10 @@ Provide a concise, professional clinical assessment. Use medical terminology app
   }
 
   return (
-    <div className="bg-white border border-gray-200 rounded-xl shadow-sm flex flex-col h-[550px] overflow-hidden">
+    <div className="bg-white dark:bg-ink-800 border border-gray-200 dark:border-ink-600 rounded-xl shadow-sm flex flex-col h-[550px] overflow-hidden">
       {/* Header */}
       <div className="bg-gradient-to-r from-teal-600 to-emerald-700 p-4 text-white flex items-center gap-3 shrink-0">
-        <div className="w-8 h-8 rounded-full bg-white/20 flex items-center justify-center font-bold text-white text-xs tracking-widest">
+        <div className="w-8 h-8 rounded-full bg-white dark:bg-ink-800 /20 flex items-center justify-center font-bold text-white text-xs tracking-widest">
           AI
         </div>
         <div>
@@ -117,24 +117,24 @@ Provide a concise, professional clinical assessment. Use medical terminology app
       </div>
 
       {/* Smart Summary Area */}
-      <div className="p-4 bg-teal-50/50 border-b border-gray-100 shrink-0">
+      <div className="p-4 bg-teal-50/50 border-b border-gray-100 dark:border-ink-700 shrink-0">
         <div className="flex items-center gap-1.5 mb-2 text-teal-700">
           <span className="bg-teal-100 text-teal-700 px-1.5 py-0.5 rounded text-[10px] font-bold tracking-wider">AI</span>
           <span className="text-xs font-bold uppercase tracking-wide">10-Second Briefing</span>
         </div>
         {generatingSummary ? (
-          <div className="flex items-center gap-2 text-sm text-gray-500 font-medium">
+          <div className="flex items-center gap-2 text-sm text-gray-500 dark:text-gray-400 font-medium">
             <Loader2 size={14} className="animate-spin text-teal-600" /> Analyzing vitals history...
           </div>
         ) : (
-          <p className="text-sm text-gray-800 leading-relaxed font-medium">
+          <p className="text-sm text-gray-800 dark:text-gray-100 leading-relaxed font-medium">
             {summary}
           </p>
         )}
       </div>
 
       {/* Chat History */}
-      <div className="flex-1 overflow-y-auto p-4 space-y-4 bg-gray-50/50">
+      <div className="flex-1 overflow-y-auto p-4 space-y-4 bg-gray-50 dark:bg-ink-900/50">
         {messages.length === 0 && (
           <div className="text-center text-gray-400 text-sm mt-8">
             Ask a clinical question about {patientName}'s vitals.
@@ -146,7 +146,7 @@ Provide a concise, professional clinical assessment. Use medical terminology app
               className={`max-w-[85%] rounded-2xl px-4 py-2 text-sm leading-relaxed ${
                 msg.role === "user" 
                   ? "bg-teal-600 text-white rounded-br-none" 
-                  : "bg-white border border-gray-200 text-gray-800 rounded-bl-none shadow-sm"
+                  : "bg-white dark:bg-ink-800 border border-gray-200 dark:border-ink-600 text-gray-800 dark:text-gray-100 rounded-bl-none shadow-sm"
               }`}
             >
               {msg.content}
@@ -155,7 +155,7 @@ Provide a concise, professional clinical assessment. Use medical terminology app
         ))}
         {isTyping && (
           <div className="flex justify-start">
-            <div className="bg-white border border-gray-200 text-gray-500 rounded-2xl rounded-bl-none px-4 py-2.5 text-sm flex items-center gap-1.5 shadow-sm">
+            <div className="bg-white dark:bg-ink-800 border border-gray-200 dark:border-ink-600 text-gray-500 dark:text-gray-400 rounded-2xl rounded-bl-none px-4 py-2.5 text-sm flex items-center gap-1.5 shadow-sm">
               <span className="w-1.5 h-1.5 bg-gray-400 rounded-full animate-bounce"></span>
               <span className="w-1.5 h-1.5 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '0.1s' }}></span>
               <span className="w-1.5 h-1.5 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '0.2s' }}></span>
@@ -165,13 +165,13 @@ Provide a concise, professional clinical assessment. Use medical terminology app
       </div>
 
       {/* Input Form */}
-      <form onSubmit={handleSend} className="p-3 border-t border-gray-200 bg-white flex items-center gap-2 shrink-0">
+      <form onSubmit={handleSend} className="p-3 border-t border-gray-200 dark:border-ink-600 bg-white dark:bg-ink-800 flex items-center gap-2 shrink-0">
         <input 
           type="text" 
           value={input}
           onChange={(e) => setInput(e.target.value)}
           placeholder="Ask a question..."
-          className="flex-1 bg-gray-50 border border-gray-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-teal-500 focus:ring-1 focus:ring-teal-500 transition-colors"
+          className="flex-1 bg-gray-50 dark:bg-ink-900 border border-gray-200 dark:border-ink-600 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-teal-500 focus:ring-1 focus:ring-teal-500 transition-colors"
           disabled={isTyping}
         />
         <button 

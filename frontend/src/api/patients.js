@@ -27,7 +27,7 @@ export async function getAllPatients() {
   snap.forEach((child) => {
     const u = child.val();
     if (u.role === 'patient') {
-      patients.push({
+      const patientData = {
         _id:      child.key,
         uid:      child.key,
         name:     u.name     || 'Unknown',
@@ -35,6 +35,10 @@ export async function getAllPatients() {
         memberId: u.memberId || '—',
         gender:   u.gender   || '—',
         phone:    u.phone    || '—',
+        location: typeof u.location === 'string' ? u.location : (u.location ? "Tracking Enabled" : "—"),
+        bloodGroup: u.bloodGroup || '',
+        height:   u.height || '',
+        weight:   u.weight || '',
         dob:      u.dob      || null,
         age:      u.dob
           ? Math.floor((Date.now() - new Date(u.dob).getTime()) / (365.25 * 24 * 3600000))
@@ -43,7 +47,8 @@ export async function getAllPatients() {
         latestReading: null,
         updatedAt:     null,
         createdAt:     u.createdAt || null,
-      });
+      };
+      patients.push(patientData);
     }
   });
 
@@ -89,6 +94,10 @@ export async function getPatient(uid) {
     memberId: u.memberId || '—',
     gender:   u.gender   || '—',
     phone:    u.phone    || '—',
+    location: typeof u.location === 'string' ? u.location : (u.location ? "Tracking Enabled" : "—"),
+    bloodGroup: u.bloodGroup || '',
+    height:   u.height || '',
+    weight:   u.weight || '',
     dob:      u.dob      || null,
     age:      u.dob
       ? Math.floor((Date.now() - new Date(u.dob).getTime()) / (365.25 * 24 * 3600000))
@@ -98,4 +107,17 @@ export async function getPatient(uid) {
   
   localStorage.setItem(`cache_patient_${uid}`, JSON.stringify(patientData));
   return patientData;
+}
+
+/**
+ * Update a patient's demographics
+ */
+export async function updatePatient(uid, updates) {
+  const { update } = await import('firebase/database');
+  const patientRef = ref(rtdb, `users/${uid}`);
+  await update(patientRef, updates);
+  
+  // Clear caches
+  localStorage.removeItem(`cache_patient_${uid}`);
+  localStorage.removeItem("cache_all_patients");
 }

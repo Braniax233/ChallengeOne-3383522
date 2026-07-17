@@ -102,15 +102,15 @@ export default function PatientCapture() {
           </div>
           <div className="grid grid-cols-2 gap-6 mb-4">
             <div>
-              <p className="text-4xl font-bold text-ink-900">{reading.spo2}%</p>
-              <p className="text-sm text-ink-500 mt-1">SpO₂</p>
+              <p className="text-4xl font-bold text-ink-900 dark:text-gray-100 ">{reading.spo2}%</p>
+              <p className="text-sm text-ink-500 dark:text-gray-400 mt-1">SpO₂</p>
             </div>
             <div>
-              <p className="text-4xl font-bold text-ink-900">{reading.hr}</p>
-              <p className="text-sm text-ink-500 mt-1">Heart Rate</p>
+              <p className="text-4xl font-bold text-ink-900 dark:text-gray-100 ">{reading.hr}</p>
+              <p className="text-sm text-ink-500 dark:text-gray-400 mt-1">Heart Rate</p>
             </div>
           </div>
-          <p className="text-sm text-ink-600">{resultStyle.msg}</p>
+          <p className="text-sm text-ink-600 dark:text-gray-300">{resultStyle.msg}</p>
           {saving && <p className="text-xs text-ink-400 mt-2">Saving reading…</p>}
           {!saving && isOffline && <p className="text-xs text-amber-600 mt-2 font-medium">Saved to offline queue. Will sync when reconnected.</p>}
         </div>
@@ -127,7 +127,7 @@ export default function PatientCapture() {
 
         <div className="flex gap-3">
           <button onClick={reset}
-            className="flex-1 flex items-center justify-center gap-2 py-3 rounded-xl border border-ink-200 text-sm font-semibold text-ink-600 hover:bg-ink-50 transition-colors">
+            className="flex-1 flex items-center justify-center gap-2 py-3 rounded-xl border border-ink-200 text-sm font-semibold text-ink-600 dark:text-gray-300 hover:bg-ink-50 transition-colors">
             <RotateCcw size={15} /> Take Another
           </button>
           <button onClick={() => navigate('/patient/dashboard')}
@@ -169,7 +169,7 @@ export default function PatientCapture() {
                 {waiting ? (
                   <Wifi size={40} className="text-teal-400 animate-pulse" />
                 ) : (
-                  <Heart size={40} className="text-ink-500" />
+                  <Heart size={40} className="text-ink-500 dark:text-gray-400" />
                 )}
               </div>
 
@@ -208,7 +208,7 @@ export default function PatientCapture() {
                 </label>
                 <input type="number" value={spo2} onChange={(e) => setSpo2(e.target.value)}
                   placeholder="e.g. 97" min="70" max="100"
-                  className="w-full px-3 py-2.5 text-sm bg-ink-800 border border-ink-700 text-white rounded-xl focus:outline-none focus:ring-2 focus:ring-teal-500/50 placeholder:text-ink-500" />
+                  className="w-full px-3 py-2.5 text-sm bg-ink-800 border border-ink-700 text-white rounded-xl focus:outline-none focus:ring-2 focus:ring-teal-500/50 placeholder:text-ink-500 dark:text-gray-400" />
               </div>
               <div>
                 <label className="block text-xs font-semibold text-ink-300 mb-1.5">
@@ -216,7 +216,7 @@ export default function PatientCapture() {
                 </label>
                 <input type="number" value={hr} onChange={(e) => setHr(e.target.value)}
                   placeholder="e.g. 72" min="30" max="250"
-                  className="w-full px-3 py-2.5 text-sm bg-ink-800 border border-ink-700 text-white rounded-xl focus:outline-none focus:ring-2 focus:ring-teal-500/50 placeholder:text-ink-500" />
+                  className="w-full px-3 py-2.5 text-sm bg-ink-800 border border-ink-700 text-white rounded-xl focus:outline-none focus:ring-2 focus:ring-teal-500/50 placeholder:text-ink-500 dark:text-gray-400" />
               </div>
             </div>
 

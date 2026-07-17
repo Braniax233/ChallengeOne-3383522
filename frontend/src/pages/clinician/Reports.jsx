@@ -22,7 +22,7 @@ const iconColors = {
   teal:  'bg-teal-50 text-teal-600',
   blue:  'bg-blue-50 text-blue-600',
   coral: 'bg-coral-50 text-coral-500',
-  ink:   'bg-ink-100 text-ink-600',
+  ink:   'bg-ink-100 text-ink-600 dark:text-gray-300',
 };
 
 export default function Reports() {
@@ -105,8 +105,8 @@ export default function Reports() {
               <s.icon size={18} />
             </div>
             <div>
-              <p className="text-2xl font-bold text-ink-900">{s.value}</p>
-              <p className="text-xs text-ink-500">{s.label}</p>
+              <p className="text-2xl font-bold text-ink-900 dark:text-gray-100 ">{s.value}</p>
+              <p className="text-xs text-ink-500 dark:text-gray-400">{s.label}</p>
               <p className="text-[11px] text-ink-400">{s.sub}</p>
             </div>
           </div>
@@ -116,7 +116,7 @@ export default function Reports() {
       {/* Weekly chart */}
       <div className="vx-card">
         <div className="px-5 py-4 border-b border-ink-100">
-          <h3 className="text-sm font-bold text-ink-900">Weekly Reading Summary</h3>
+          <h3 className="text-sm font-bold text-ink-900 dark:text-gray-100 ">Weekly Reading Summary</h3>
           <p className="text-xs text-ink-400 mt-0.5">Status distribution across all patients this week</p>
         </div>
         <div className="p-5">
@@ -139,7 +139,7 @@ export default function Reports() {
       <div className="vx-card">
         <div className="px-5 py-4 border-b border-ink-100">
           <div className="flex flex-col sm:flex-row sm:items-center gap-3">
-            <h3 className="text-sm font-bold text-ink-900 flex-1">Recent Reports</h3>
+            <h3 className="text-sm font-bold text-ink-900 dark:text-gray-100 flex-1">Recent Reports</h3>
             <div className="flex items-center gap-2 flex-wrap">
               <input type="date" value={dateFrom} onChange={(e) => setDateFrom(e.target.value)}
                 className="text-xs border border-ink-200 rounded-lg px-2 py-1.5 focus:outline-none focus:ring-2 focus:ring-teal-200 focus:border-teal-400" />
@@ -173,22 +173,22 @@ export default function Reports() {
               {filtered.map((r) => (
                 <tr key={r.id} className="hover:bg-teal-50/30 transition-colors group">
                   <td className="px-5 py-3.5">
-                    <span className="font-mono text-xs bg-ink-100 text-ink-600 px-2 py-0.5 rounded-lg">{r.id}</span>
+                    <span className="font-mono text-xs bg-ink-100 text-ink-600 dark:text-gray-300 px-2 py-0.5 rounded-lg">{r.id}</span>
                   </td>
                   <td className="px-5 py-3.5">
                     <div className="flex items-center gap-2">
                       <FileText size={14} className="text-ink-300 flex-shrink-0" />
-                      <span className="text-sm font-medium text-ink-800">{r.title}</span>
+                      <span className="text-sm font-medium text-ink-800 dark:text-gray-200">{r.title}</span>
                     </div>
                   </td>
-                  <td className="px-5 py-3.5 text-sm text-ink-600">{r.patient}</td>
+                  <td className="px-5 py-3.5 text-sm text-ink-600 dark:text-gray-300">{r.patient}</td>
                   <td className="px-5 py-3.5">
                     <span className={`text-xs font-medium px-2.5 py-0.5 rounded-full ${TYPE_BADGE[r.type]}`}>{r.type}</span>
                   </td>
-                  <td className="px-5 py-3.5 text-xs text-ink-500">
+                  <td className="px-5 py-3.5 text-xs text-ink-500 dark:text-gray-400">
                     {r.generated.toLocaleDateString([], { month: 'short', day: 'numeric', year: 'numeric' })}
                   </td>
-                  <td className="px-5 py-3.5 text-xs text-ink-500">{r.size}</td>
+                  <td className="px-5 py-3.5 text-xs text-ink-500 dark:text-gray-400">{r.size}</td>
                   <td className="px-5 py-3.5">
                     <button onClick={() => handleDownload(r)} className="flex items-center gap-1 text-xs text-teal-500 hover:text-teal-700 font-medium opacity-0 group-hover:opacity-100 transition-opacity">
                       <Download size={13} /> Download

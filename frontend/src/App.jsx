@@ -1,6 +1,7 @@
 import { Routes, Route, Navigate } from "react-router-dom";
+import Draggable from "react-draggable";
 import { useAuth } from "./context/AuthContext";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { syncOfflineReadings } from "./api/readings";
 import { Moon, Sun } from "lucide-react";
 
@@ -69,6 +70,7 @@ function ProtectedRoute({ children, allowedRoles }) {
 
 export default function App() {
   const [darkMode, setDarkMode] = useState(false);
+  const nodeRef = useRef(null);
 
   useEffect(() => {
     if (darkMode) {
@@ -91,12 +93,16 @@ export default function App() {
 
   return (
     <>
-      <button 
-        onClick={() => setDarkMode(d => !d)}
-        className="fixed bottom-6 right-6 z-50 w-12 h-12 bg-teal-600 rounded-full shadow-lg flex items-center justify-center transition-colors hover:bg-teal-700 hover:scale-105 active:scale-95 border-2 border-white/20"
-      >
-        {darkMode ? <Sun size={20} className="text-white" /> : <Moon size={20} className="text-white" />}
-      </button>
+      <Draggable nodeRef={nodeRef} bounds="body">
+        <button 
+          ref={nodeRef}
+          onClick={() => setDarkMode(d => !d)}
+          className="fixed bottom-6 right-6 z-50 w-12 h-12 bg-teal-600 rounded-full shadow-lg flex items-center justify-center transition-colors hover:bg-teal-700 hover:scale-105 active:scale-95 border-2 border-white/20 dark-toggle-btn cursor-move"
+          title="Drag me!"
+        >
+          {darkMode ? <Sun size={20} className="text-white dark-toggle-icon" /> : <Moon size={20} className="text-white dark-toggle-icon" />}
+        </button>
+      </Draggable>
 
     <Routes>
       {/* ── Login page ────────────────────────────────────────────────────── */}
