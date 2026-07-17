@@ -1,0 +1,106 @@
+@import url("https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,300;0,14..32,400;0,14..32,500;0,14..32,600;0,14..32,700;0,14..32,800&display=swap");
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+    *,
+    *::before,
+    *::after {
+        box-sizing: border-box;
+    }
+
+    html {
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+    }
+
+    body {
+        margin: 0;
+        padding: 0;
+        background-color: #F4F6F8;
+        font-family: "Inter", ui-sans-serif, system-ui, sans-serif;
+        color: #1A1D23;
+    }
+
+    #root {
+        width: 100%;
+        max-width: 100%;
+        min-height: 100vh;
+        text-align: left;
+    }
+    /* Dark Mode Filter Trick */
+    html.dark {
+        filter: invert(1) hue-rotate(180deg);
+    }
+    html.dark img, html.dark video, html.dark .lucide:not(.dark-toggle-icon) {
+        filter: invert(1) hue-rotate(180deg);
+    }
+    /* Exempt the toggle button from inversion so it stays visible */
+    html.dark .dark-toggle-btn {
+        filter: invert(1) hue-rotate(180deg);
+    }
+}
+
+@layer utilities {
+    .scrollbar-hide {
+        -ms-overflow-style: none;
+        scrollbar-width: none;
+    }
+    .scrollbar-hide::-webkit-scrollbar {
+        display: none;
+    }
+
+    /* Card */
+    .vx-card {
+        @apply bg-white rounded-2xl shadow-card;
+    }
+
+    /* Teal pill badge */
+    .badge-teal {
+        @apply inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-teal-50 text-teal-600;
+    }
+
+    /* Coral/red pill badge */
+    .badge-coral {
+        @apply inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-coral-50 text-coral-500;
+    }
+
+    /* Normal pill badge */
+    .badge-normal {
+        @apply inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-teal-50 text-teal-600;
+    }
+
+    /* Warning badge */
+    .badge-warning {
+        @apply inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-amber-50 text-amber-600;
+    }
+
+    /* Icon circle button */
+    .icon-btn {
+        @apply w-9 h-9 flex items-center justify-center rounded-full bg-white shadow-soft text-ink-600 hover:text-teal-500 hover:shadow-card transition-all duration-150;
+    }
+
+    /* Teal circle (like the arrow button in stat cards) */
+    .teal-circle-btn {
+        @apply w-9 h-9 flex items-center justify-center rounded-full bg-teal-100 text-teal-600 hover:bg-teal-500 hover:text-white transition-all duration-200 flex-shrink-0;
+    }
+
+    @keyframes floatY {
+        0%, 100% { transform: translateY(0px); }
+        50%       { transform: translateY(-14px); }
+    }
+    @keyframes pingRing {
+        0%        { transform: scale(1); opacity: 0.5; }
+        75%, 100% { transform: scale(1.7); opacity: 0; }
+    }
+    @keyframes fadeSlideIn {
+        from { opacity: 0; transform: translateY(8px); }
+        to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .animate-float      { animation: floatY 3.5s ease-in-out infinite; }
+    .animate-ping-ring  { animation: pingRing 2.5s ease-out infinite; }
+    .animate-fade-in    { animation: fadeSlideIn 0.25s ease-out forwards; }
+}

@@ -1,0 +1,29 @@
+{
+  "rules": {
+    // ── User profiles (web app auth) ──────────────────────────────────────────
+    // Each authenticated user can read/write only their own profile.
+    "users": {
+      "$uid": {
+        ".read":  "$uid === auth.uid",
+        ".write": "$uid === auth.uid"
+      }
+    },
+
+    // ── Hardware vitals (ESP8266) ─────────────────────────────────────────────
+    // The hardware writes to /vitals and /readings using its own auth.
+    // All authenticated users (clinicians, patients) can read vitals.
+    "vitals": {
+      ".read":  "auth != null",
+      ".write": "auth != null"
+    },
+
+    "readings": {
+      ".read":  "auth != null",
+      ".write": "auth != null"
+    },
+
+    // ── Default: deny everything else ─────────────────────────────────────────
+    ".read":  false,
+    ".write": false
+  }
+}
