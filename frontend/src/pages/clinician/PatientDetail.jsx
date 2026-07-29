@@ -101,6 +101,7 @@ const generateReadings = (n = 30) =>
       timestamp: t,
       spo2,
       hr,
+      temp: 36.5 + (Math.random() * 0.8),
       status:
         spo2 < 90 || hr > 120 || hr < 45
           ? "CRITICAL"
@@ -174,6 +175,7 @@ const normalizePt = (raw, id) => {
       ? {
           hr: raw.latestReading.heartRate ?? raw.latestReading.hr,
           spo2: raw.latestReading.spo2,
+          temp: raw.latestReading.temperature,
           timestamp: raw.latestReading.timestamp,
         }
       : null,
@@ -196,6 +198,7 @@ const normalizeReadings = (readings) =>
     return {
       ...r,
       hr: r.heartRate ?? r.hr,
+      temp: r.temperature || 36.5,
       time: t || "—",
     };
   });
@@ -284,6 +287,10 @@ export default function PatientDetail() {
     .slice(-10);
   const spo2Data = readings
     .map((r) => r.spo2)
+    .filter(Boolean)
+    .slice(-10);
+  const tempData = readings
+    .map((r) => r.temp)
     .filter(Boolean)
     .slice(-10);
 
@@ -514,7 +521,7 @@ export default function PatientDetail() {
               {activeTab === "overview" && (
                 <div className="space-y-6">
                   {/* Current vitals */}
-                  <div className="grid grid-cols-2 gap-4">
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                     {/* Heart Rate */}
                     <div className="p-4 rounded-xl border border-gray-100 dark:border-ink-700 bg-gray-50 dark:bg-ink-900">
                       <div className="flex items-center justify-between mb-3">
@@ -563,6 +570,31 @@ export default function PatientDetail() {
                       </div>
                       <div className="h-10 mt-2">
                         <SparklineChart data={spo2Data} color="#3b82f6" />
+                      </div>
+                    </div>
+                    {/* Temp */}
+                    <div className="p-4 rounded-xl border border-gray-100 dark:border-ink-700 bg-gray-50 dark:bg-ink-900">
+                      <div className="flex items-center justify-between mb-3">
+                        <div className="flex items-center gap-2">
+                          <div className="p-1.5 bg-orange-100 rounded-lg">
+                            <Activity size={14} className="text-orange-500" />
+                          </div>
+                          <span className="text-sm font-medium text-gray-700 dark:text-gray-200">
+                            Temperature
+                          </span>
+                        </div>
+                        <StatusBadge
+                          status={latest?.status ?? patient.status}
+                        />
+                      </div>
+                      <div className="flex items-end gap-2">
+                        <p className="text-3xl font-bold text-gray-800 dark:text-gray-100 ">
+                          {latest?.temp ?? patient.latestReading?.temp ?? "—"}
+                        </p>
+                        <p className="text-sm text-gray-500 dark:text-gray-400 mb-1">°C</p>
+                      </div>
+                      <div className="h-10 mt-2">
+                        <SparklineChart data={tempData} color="#f97316" />
                       </div>
                     </div>
                   </div>
@@ -686,7 +718,7 @@ export default function PatientDetail() {
                             />
                             <div className="flex-1">
                               <p className="text-xs font-medium text-gray-700 dark:text-gray-200">
-                                HR: {r.hr} bpm &nbsp;·&nbsp; SpO2: {r.spo2}%
+                                HR: {r.hr} bpm &nbsp;·&nbsp; SpO2: {r.spo2}% &nbsp;·&nbsp; Temp: {r.temp ? r.temp.toFixed(1) : '--'}°C
                               </p>
                             </div>
                             <StatusBadge status={r.status} />
@@ -787,6 +819,7 @@ export default function PatientDetail() {
                           <th className="text-left px-4 py-2">Time</th>
                           <th className="text-left px-4 py-2">HR (bpm)</th>
                           <th className="text-left px-4 py-2">SpO2 (%)</th>
+                          <th className="text-left px-4 py-2">Temp (°C)</th>
                           <th className="text-left px-4 py-2">Status</th>
                         </tr>
                       </thead>
@@ -805,6 +838,9 @@ export default function PatientDetail() {
                               </td>
                               <td className="px-4 py-2 font-medium text-gray-700 dark:text-gray-200">
                                 {r.spo2}%
+                              </td>
+                              <td className="px-4 py-2 font-medium text-gray-700 dark:text-gray-200">
+                                {r.temp ? r.temp.toFixed(1) : '--'}
                               </td>
                               <td className="px-4 py-2">
                                 <StatusBadge status={r.status} />

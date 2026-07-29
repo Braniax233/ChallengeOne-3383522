@@ -292,16 +292,21 @@ export default function ClinicianLayout() {
             </div>
 
             {liveVitals ? (
-              <div className="grid grid-cols-2 gap-2">
-                <div className="text-center p-3 bg-coral-50 rounded-xl border border-coral-100">
+              <div className="grid grid-cols-3 gap-2">
+                <div className="text-center p-2 bg-coral-50 rounded-xl border border-coral-100">
                   <Heart size={13} className="text-coral-400 mx-auto mb-1" />
-                  <p className="text-xl font-bold text-ink-900">{liveVitals.heartRate}</p>
+                  <p className="text-lg font-bold text-ink-900">{liveVitals.heartRate}</p>
                   <p className="text-[10px] text-ink-400">bpm</p>
                 </div>
-                <div className="text-center p-3 bg-teal-50 rounded-xl border border-teal-100">
+                <div className="text-center p-2 bg-teal-50 rounded-xl border border-teal-100">
                   <Monitor size={13} className="text-teal-500 mx-auto mb-1" />
-                  <p className="text-xl font-bold text-ink-900">{liveVitals.spo2}</p>
-                  <p className="text-[10px] text-ink-400">SpO₂ %</p>
+                  <p className="text-lg font-bold text-ink-900">{liveVitals.spo2}</p>
+                  <p className="text-[10px] text-ink-400">SpO₂</p>
+                </div>
+                <div className="text-center p-2 bg-orange-50 rounded-xl border border-orange-100">
+                  <Activity size={13} className="text-orange-500 mx-auto mb-1" />
+                  <p className="text-lg font-bold text-ink-900">{liveVitals.temperature ? liveVitals.temperature.toFixed(1) : '--'}</p>
+                  <p className="text-[10px] text-ink-400">Temp °C</p>
                 </div>
               </div>
             ) : (

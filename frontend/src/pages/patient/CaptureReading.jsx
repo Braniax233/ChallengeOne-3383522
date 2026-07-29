@@ -21,6 +21,7 @@ export default function PatientCapture() {
   const [manualMode, setManualMode] = useState(false);
   const [spo2, setSpo2] = useState('');
   const [hr, setHr]     = useState('');
+  const [temp, setTemp] = useState('');
   const [isOffline, setIsOffline] = useState(!navigator.onLine);
 
   useEffect(() => {
@@ -42,8 +43,8 @@ export default function PatientCapture() {
   // ── When device data arrives ──────────────────────────────────────────────
   useEffect(() => {
     if (!latestReading || !user) return;
-    const status = classifyReading(latestReading.spo2, latestReading.heartRate);
-    const r = { spo2: latestReading.spo2, hr: latestReading.heartRate, status, timestamp: new Date() };
+    const status = classifyReading(latestReading.spo2, latestReading.heartRate, latestReading.temperature);
+    const r = { spo2: latestReading.spo2, hr: latestReading.heartRate, temp: latestReading.temperature, status, timestamp: new Date() };
     setReading(r);
     stopListening();
 
@@ -53,6 +54,7 @@ export default function PatientCapture() {
         await saveReading(user.uid, {
           spo2:           r.spo2,
           heartRate:      r.hr,
+          temperature:    r.temp,
           status:         r.status,
           capturedBy:     user.uid,
           captureContext: 'home',
@@ -65,8 +67,8 @@ export default function PatientCapture() {
   // ── Manual submit ─────────────────────────────────────────────────────────
   const handleManualSubmit = async () => {
     if (!spo2 || !hr || !user) return;
-    const status = classifyReading(spo2, hr);
-    const r = { spo2: parseFloat(spo2), hr: parseFloat(hr), status, timestamp: new Date() };
+    const status = classifyReading(spo2, hr, temp);
+    const r = { spo2: parseFloat(spo2), hr: parseFloat(hr), temp: parseFloat(temp) || 36.5, status, timestamp: new Date() };
     setReading(r);
 
     setSaving(true);
@@ -74,6 +76,7 @@ export default function PatientCapture() {
       await saveReading(user.uid, {
         spo2:           r.spo2,
         heartRate:      r.hr,
+        temperature:    r.temp,
         status:         r.status,
         capturedBy:     user.uid,
         captureContext: 'home',
@@ -86,7 +89,7 @@ export default function PatientCapture() {
     stopListening();
     setReading(null);
     setManualMode(false);
-    setSpo2(''); setHr('');
+    setSpo2(''); setHr(''); setTemp('');
   };
 
   const resultStyle = reading ? (STATUS_STYLES[reading.status] ?? STATUS_STYLES.NORMAL) : null;
@@ -100,7 +103,7 @@ export default function PatientCapture() {
           <div className={`inline-flex items-center gap-2 px-4 py-2 rounded-full text-white text-sm font-bold mb-4 ${resultStyle.badge}`}>
             <resultStyle.icon size={16} /> {reading.status}
           </div>
-          <div className="grid grid-cols-2 gap-6 mb-4">
+          <div className="grid grid-cols-3 gap-6 mb-4">
             <div>
               <p className="text-4xl font-bold text-ink-900 dark:text-gray-100 ">{reading.spo2}%</p>
               <p className="text-sm text-ink-500 dark:text-gray-400 mt-1">SpO₂</p>
@@ -108,6 +111,10 @@ export default function PatientCapture() {
             <div>
               <p className="text-4xl font-bold text-ink-900 dark:text-gray-100 ">{reading.hr}</p>
               <p className="text-sm text-ink-500 dark:text-gray-400 mt-1">Heart Rate</p>
+            </div>
+            <div>
+              <p className="text-4xl font-bold text-ink-900 dark:text-gray-100 ">{reading.temp ? reading.temp.toFixed(1) : '--'}</p>
+              <p className="text-sm text-ink-500 dark:text-gray-400 mt-1">Temp (°C)</p>
             </div>
           </div>
           <p className="text-sm text-ink-600 dark:text-gray-300">{resultStyle.msg}</p>
@@ -201,7 +208,7 @@ export default function PatientCapture() {
 
         {manualMode && (
           <div className="space-y-4">
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-3 gap-4">
               <div>
                 <label className="block text-xs font-semibold text-ink-300 mb-1.5">
                   <Activity size={12} className="inline mr-1" /> SpO₂ (%)
@@ -216,6 +223,14 @@ export default function PatientCapture() {
                 </label>
                 <input type="number" value={hr} onChange={(e) => setHr(e.target.value)}
                   placeholder="e.g. 72" min="30" max="250"
+                  className="w-full px-3 py-2.5 text-sm bg-ink-800 border border-ink-700 text-white rounded-xl focus:outline-none focus:ring-2 focus:ring-teal-500/50 placeholder:text-ink-500 dark:text-gray-400" />
+              </div>
+              <div>
+                <label className="block text-xs font-semibold text-ink-300 mb-1.5">
+                  <Activity size={12} className="inline mr-1" /> Temp (°C)
+                </label>
+                <input type="number" value={temp} onChange={(e) => setTemp(e.target.value)}
+                  placeholder="e.g. 36.5" step="0.1"
                   className="w-full px-3 py-2.5 text-sm bg-ink-800 border border-ink-700 text-white rounded-xl focus:outline-none focus:ring-2 focus:ring-teal-500/50 placeholder:text-ink-500 dark:text-gray-400" />
               </div>
             </div>

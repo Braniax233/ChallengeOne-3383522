@@ -102,10 +102,12 @@ export async function getAllReadings(limit = 50) {
 /**
  * Classify a reading into NORMAL / WARNING / CRITICAL.
  */
-export function classifyReading(spo2, hr) {
+export function classifyReading(spo2, hr, temp) {
   const s = parseFloat(spo2);
   const h = parseFloat(hr);
-  if (s < 90 || h > 120 || h < 40) return 'CRITICAL';
-  if (s < 94 || h > 100 || h < 60) return 'WARNING';
+  const t = parseFloat(temp || 36.5); // Default to normal if not provided
+  
+  if (s < 90 || h > 120 || h < 40 || t >= 39.5 || t <= 35.0) return 'CRITICAL';
+  if (s < 94 || h > 100 || h < 60 || t >= 38.0 || t < 36.0) return 'WARNING';
   return 'NORMAL';
 }

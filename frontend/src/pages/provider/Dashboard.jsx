@@ -128,6 +128,10 @@ export default function ProviderDashboard() {
               <p className="text-xs text-ink-500 dark:text-gray-400">SpO₂</p>
               <p className="text-2xl font-bold text-ink-900 dark:text-gray-100 ">{liveData.spo2}<span className="text-sm font-normal text-ink-400">%</span></p>
             </div>
+            <div>
+              <p className="text-xs text-ink-500 dark:text-gray-400">Temp</p>
+              <p className="text-2xl font-bold text-ink-900 dark:text-gray-100 ">{liveData.temperature ? liveData.temperature.toFixed(1) : '--'}<span className="text-sm font-normal text-ink-400">°C</span></p>
+            </div>
             <div className="ml-auto text-right">
               <p className="text-xs text-ink-400">Last update</p>
               <p className="text-xs font-mono text-ink-600 dark:text-gray-300">Just now</p>

@@ -24,6 +24,7 @@ const normalizeAlerts = (alts) =>
     type: a.message ?? a.type,
     memberId: a.membershipId ?? a.memberId,
     hr: a.heartRate ?? a.hr,
+    temp: a.temperature ?? a.temp,
     location: a.gpsCoordinates ?? a.location ?? null,
     status: a.status ?? (a.resolvedAt ? "resolved" : "unresolved"),
     createdAt: a.timestamp ?? a.createdAt,
@@ -74,7 +75,7 @@ export default function Alerts() {
     if (!isReady || analyzing === alert._id) return;
     setAnalyzing(alert._id);
     try {
-      const prompt = `You are a clinical AI triage assistant. Analyze this medical alert: Patient ${alert.patientName}, HR: ${alert.hr} bpm, SpO2: ${alert.spo2}%. Severity marked as ${alert.severity}. Provide a very concise 1-2 sentence triage assessment. Do not hallucinate.`;
+      const prompt = `You are a clinical AI triage assistant. Analyze this medical alert: Patient ${alert.patientName}, HR: ${alert.hr} bpm, SpO2: ${alert.spo2}%, Temp: ${alert.temp ? alert.temp.toFixed(1) : '--'}°C. Severity marked as ${alert.severity}. Provide a very concise 1-2 sentence triage assessment. Do not hallucinate.`;
       const response = await chat(prompt, "Triage this alert.");
       if (response) {
         setTriageResults(prev => ({ ...prev, [alert._id]: response }));
@@ -199,6 +200,10 @@ export default function Alerts() {
                         <span className="flex items-center gap-1.5">
                           <span className="w-1.5 h-1.5 bg-teal-400 rounded-full" />
                           <span className="font-mono font-semibold text-ink-700">SpO₂: {alert.spo2}%</span>
+                        </span>
+                        <span className="flex items-center gap-1.5">
+                          <span className="w-1.5 h-1.5 bg-orange-400 rounded-full" />
+                          <span className="font-mono font-semibold text-ink-700">Temp: {alert.temp ? alert.temp.toFixed(1) : '--'}°C</span>
                         </span>
                         {alert.location && (
                           <span className="flex items-center gap-1 text-ink-400">

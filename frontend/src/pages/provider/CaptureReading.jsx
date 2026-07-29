@@ -2,8 +2,10 @@ import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
   Search, User, CheckCircle, AlertCircle, Heart, Activity,
-  ChevronRight, RotateCcw, MessageSquare, Wifi, Plus, X
+  ChevronRight, RotateCcw, MessageSquare, Wifi, Plus, X,
+  Sparkles, Loader2
 } from 'lucide-react';
+import { useWebLLMContext } from '../../context/WebLLMContext';
 import { useAuth } from '../../context/AuthContext';
 import useVitalsListener from '../../hooks/useVitalsListener';
 import { saveReading, classifyReading } from '../../api/readings';
@@ -65,6 +67,7 @@ export default function CaptureReading() {
   const navigate = useNavigate();
   const { user } = useAuth();
   const { latestReading, waiting, startListening, stopListening } = useVitalsListener();
+  const { chat, isReady } = useWebLLMContext();
 
   const [step, setStep]             = useState(1);
   const [query, setQuery]           = useState('');
@@ -84,18 +87,22 @@ export default function CaptureReading() {
   const [manualMode, setManualMode] = useState(false);
   const [spo2, setSpo2]             = useState('');
   const [hr, setHr]                 = useState('');
+  const [temp, setTemp]             = useState('');
   const [reading, setReading]       = useState(null);
   const [note, setNote]             = useState('');
   const [noteSaved, setNoteSaved]   = useState(false);
   const [saving, setSaving]         = useState(false);
+  const [aiClassification, setAiClassification] = useState(null);
+  const [analyzingReading, setAnalyzingReading] = useState(false);
 
   // ── When device data arrives, create the reading ──────────────────────────
   useEffect(() => {
     if (!latestReading || !patient) return;
-    const status = classifyReading(latestReading.spo2, latestReading.heartRate);
+    const status = classifyReading(latestReading.spo2, latestReading.heartRate, latestReading.temperature);
     const r = {
       spo2:      latestReading.spo2,
       hr:        latestReading.heartRate,
+      temperature: latestReading.temperature,
       status,
       timestamp: new Date(),
     };
@@ -109,6 +116,7 @@ export default function CaptureReading() {
         await saveReading(patient._id || patient.uid, {
           spo2:       r.spo2,
           heartRate:  r.hr,
+          temperature: r.temperature,
           status:     r.status,
           bmi:        bmi?.value || null,
           weight:     weight || null,
@@ -204,8 +212,8 @@ export default function CaptureReading() {
   // ── Manual submit ─────────────────────────────────────────────────────────
   const handleManualSubmit = async () => {
     if (!spo2 || !hr || !patient) return;
-    const status = classifyReading(spo2, hr);
-    const r = { spo2: parseFloat(spo2), hr: parseFloat(hr), status, timestamp: new Date() };
+    const status = classifyReading(spo2, hr, temp);
+    const r = { spo2: parseFloat(spo2), hr: parseFloat(hr), temperature: parseFloat(temp) || 36.5, status, timestamp: new Date() };
     setReading(r);
 
     setSaving(true);
@@ -213,6 +221,7 @@ export default function CaptureReading() {
       await saveReading(patient._id || patient.uid, {
         spo2:       r.spo2,
         heartRate:  r.hr,
+        temperature: r.temperature,
         status:     r.status,
         bmi:        bmi?.value || null,
         weight:     weight || null,
@@ -247,8 +256,9 @@ export default function CaptureReading() {
     stopListening();
     setStep(1); setQuery(''); setPatient(null);
     setWeight(''); setHeight(''); setBmi(null);
-    setManualMode(false); setSpo2(''); setHr('');
+    setManualMode(false); setSpo2(''); setHr(''); setTemp('');
     setReading(null); setNote(''); setNoteSaved(false);
+    setAiClassification(null); setAnalyzingReading(false);
   };
 
   const resultStyle = reading ? (STATUS_STYLES[reading.status] ?? STATUS_STYLES.NORMAL) : null;
@@ -488,7 +498,7 @@ export default function CaptureReading() {
 
           {manualMode && (
             <div className="space-y-4">
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-3 gap-4">
                 <div>
                   <label className="block text-xs font-semibold text-ink-300 mb-1.5">
                     <Activity size={12} className="inline mr-1" /> SpO₂ (%)
@@ -503,6 +513,14 @@ export default function CaptureReading() {
                   </label>
                   <input type="number" value={hr} onChange={(e) => setHr(e.target.value)}
                     placeholder="e.g. 72" min="30" max="250"
+                    className="w-full px-3 py-2.5 text-sm bg-ink-800 border border-ink-700 text-white rounded-xl focus:outline-none focus:ring-2 focus:ring-teal-500/50 placeholder:text-ink-500 dark:text-gray-400" />
+                </div>
+                <div>
+                  <label className="block text-xs font-semibold text-ink-300 mb-1.5">
+                    <Activity size={12} className="inline mr-1" /> Temp (°C)
+                  </label>
+                  <input type="number" value={temp} onChange={(e) => setTemp(e.target.value)}
+                    placeholder="e.g. 36.5" step="0.1"
                     className="w-full px-3 py-2.5 text-sm bg-ink-800 border border-ink-700 text-white rounded-xl focus:outline-none focus:ring-2 focus:ring-teal-500/50 placeholder:text-ink-500 dark:text-gray-400" />
                 </div>
               </div>
@@ -535,14 +553,18 @@ export default function CaptureReading() {
               <resultStyle.icon size={16} /> {reading.status}
             </div>
 
-            <div className="grid grid-cols-2 gap-6 mb-4">
+            <div className="grid grid-cols-3 gap-6 mb-4">
               <div>
                 <p className="text-4xl font-bold text-ink-900 dark:text-gray-100 ">{reading.spo2}%</p>
-                <p className="text-sm text-ink-500 dark:text-gray-400 mt-1">SpO₂ — Oxygen Saturation</p>
+                <p className="text-sm text-ink-500 dark:text-gray-400 mt-1">SpO₂</p>
               </div>
               <div>
                 <p className="text-4xl font-bold text-ink-900 dark:text-gray-100 ">{reading.hr}</p>
-                <p className="text-sm text-ink-500 dark:text-gray-400 mt-1">Heart Rate (bpm)</p>
+                <p className="text-sm text-ink-500 dark:text-gray-400 mt-1">Heart Rate</p>
+              </div>
+              <div>
+                <p className="text-4xl font-bold text-ink-900 dark:text-gray-100 ">{reading.temperature ? reading.temperature.toFixed(1) : '--'}</p>
+                <p className="text-sm text-ink-500 dark:text-gray-400 mt-1">Temp (°C)</p>
               </div>
             </div>
 
@@ -559,6 +581,44 @@ export default function CaptureReading() {
               </div>
             </div>
           )}
+
+          <div className="vx-card p-5">
+            <div className="flex items-center justify-between mb-3">
+              <div className="flex items-center gap-2">
+                <Sparkles size={15} className="text-indigo-500" />
+                <h4 className="text-sm font-semibold text-ink-700">AI Clinical Classification</h4>
+              </div>
+              {isReady && !aiClassification && !analyzingReading && (
+                <button onClick={async () => {
+                  setAnalyzingReading(true);
+                  try {
+                    const prompt = `Patient: ${patient.name}, Age: ${patient.age || 'Unknown'}. Vitals: HR ${reading.hr} bpm, SpO2 ${reading.spo2}%, Temp ${reading.temperature}°C. Provide a 'mild classification' (e.g., Mild Hypoxia, Normal, Moderate Tachycardia) and a 1-sentence clinical recommendation.`;
+                    const res = await chat(prompt, "Classify these vitals.");
+                    setAiClassification(res);
+                  } catch(e) {
+                    setAiClassification("Failed to analyze. Please try again.");
+                  } finally {
+                    setAnalyzingReading(false);
+                  }
+                }} className="text-xs bg-indigo-50 text-indigo-600 hover:bg-indigo-100 px-3 py-1.5 rounded-lg font-medium transition-colors">
+                  Analyze Vitals
+                </button>
+              )}
+            </div>
+            {!isReady ? (
+              <p className="text-xs text-ink-400">Offline AI model is not loaded. Enable it in the Clinician dashboard.</p>
+            ) : analyzingReading ? (
+              <div className="flex items-center gap-2 text-xs text-indigo-600">
+                <Loader2 size={14} className="animate-spin" /> Analyzing vitals...
+              </div>
+            ) : aiClassification ? (
+              <div className="p-3 bg-indigo-50 border border-indigo-100 rounded-lg">
+                <p className="text-sm text-indigo-900 leading-relaxed font-medium">{aiClassification}</p>
+              </div>
+            ) : (
+              <p className="text-xs text-ink-500">Use the local AI to identify mild anomalies and get instant clinical context.</p>
+            )}
+          </div>
 
           <div className="vx-card p-5">
             <div className="flex items-center gap-2 mb-3">

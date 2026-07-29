@@ -44,6 +44,7 @@ export default function useVitalsListener() {
       setLatestReading({
         heartRate: data.heartRate ?? data.hr ?? 0,
         spo2:      data.spo2 ?? 0,
+        temperature: data.temperature ?? data.temp ?? 0,
         timestamp: data.timestamp ?? Date.now(),
         raw:       data,
       });

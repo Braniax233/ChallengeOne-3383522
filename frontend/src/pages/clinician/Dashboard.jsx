@@ -76,7 +76,7 @@ const normalizePts = (pts) =>
     status:   p.latestReading?.status ?? p.status,
     updatedAt: p.latestReading?.timestamp ?? p.updatedAt,
     latestReading: p.latestReading
-      ? { hr: p.latestReading.heartRate ?? p.latestReading.hr, spo2: p.latestReading.spo2 }
+      ? { hr: p.latestReading.heartRate ?? p.latestReading.hr, spo2: p.latestReading.spo2, temp: p.latestReading.temperature }
       : null,
   }));
 
@@ -380,7 +380,7 @@ export default function ClinicianDashboard() {
           <table className="w-full min-w-[540px]">
             <thead>
               <tr>
-                {["Patient", "Status", "Heart Rate", "SpO₂", "Last Updated", ""].map((h) => (
+                {["Patient", "Status", "Heart Rate", "SpO₂", "Temp", "Last Updated", ""].map((h) => (
                   <th key={h} className="text-left text-xs font-medium text-ink-400 px-5 py-3">
                     {h}
                   </th>
@@ -427,6 +427,11 @@ export default function ClinicianDashboard() {
                       <span className="text-sm font-medium text-ink-700">
                         {patient.latestReading?.spo2 ?? "—"}%
                       </span>
+                    </div>
+                  </td>
+                  <td className="px-5 py-3.5">
+                    <div className="flex items-center gap-1.5 text-ink-700 font-medium text-sm">
+                      {patient.latestReading?.temp ? `${patient.latestReading.temp.toFixed(1)}°C` : '—'}
                     </div>
                   </td>
                   <td className="px-5 py-3.5">

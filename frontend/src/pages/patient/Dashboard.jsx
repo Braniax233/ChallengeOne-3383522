@@ -112,6 +112,7 @@ const generateHistory = () =>
     }),
     spo2: 94 + Math.floor(Math.random() * 5),
     hr: 68 + Math.floor(Math.random() * 20),
+    temp: 36.5 + (Math.random() * 0.8),
   }));
 
 export default function PatientDashboard() {
@@ -196,14 +197,15 @@ export default function PatientDashboard() {
           const latest = rds[0];
           setPatient((prev) => ({
             ...prev,
-            status: latest.status || classifyReading(latest.spo2, latest.heartRate),
-            latestReading: { hr: latest.heartRate, spo2: latest.spo2 },
+            status: latest.status || classifyReading(latest.spo2, latest.heartRate, latest.temperature),
+            latestReading: { hr: latest.heartRate, spo2: latest.spo2, temp: latest.temperature },
           }));
           // Build chart history from readings
           const hist = [...rds].reverse().map((r) => ({
             time: new Date(r.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
             spo2: r.spo2,
             hr:   r.heartRate,
+            temp: r.temperature || 36.5,
           }));
           setHistory(hist.length > 0 ? hist : generateHistory());
         }
@@ -214,12 +216,14 @@ export default function PatientDashboard() {
 
   const latestHr = patient?.latestReading?.hr ?? 72;
   const latestSpo2 = patient?.latestReading?.spo2 ?? 98;
+  const latestTemp = patient?.latestReading?.temp ?? 36.5;
   const status = (patient?.status ?? "NORMAL").toUpperCase();
   const banner = STATUS_BANNER[status] ?? STATUS_BANNER.NORMAL;
   const BannerIcon = banner.icon;
 
   const hrData = history.map((h) => h.hr);
   const spo2Data = history.map((h) => h.spo2);
+  const tempData = history.map((h) => h.temp);
 
   // ── Actions ────────────────────────────────────────────────────────────────
   const handleLocationToggle = async () => {
@@ -358,7 +362,7 @@ export default function PatientDashboard() {
         <div className="lg:col-span-2 space-y-6">
 
           {/* Vital cards */}
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             {/* SpO2 */}
             <div className="bg-white dark:bg-ink-800 rounded-xl border border-gray-100 dark:border-ink-700 shadow-sm p-5 transition-all duration-300 hover:-translate-y-1 hover:shadow-lg">
               <div className="flex items-center justify-between mb-3">
@@ -400,6 +404,28 @@ export default function PatientDashboard() {
               </div>
               <div className="h-12">
                 <SparklineChart data={hrData} color="#ef4444" tooltip />
+              </div>
+            </div>
+
+            {/* Temp */}
+            <div className="bg-white dark:bg-ink-800 rounded-xl border border-gray-100 dark:border-ink-700 shadow-sm p-5 transition-all duration-300 hover:-translate-y-1 hover:shadow-lg">
+              <div className="flex items-center justify-between mb-3">
+                <div className="flex items-center gap-2">
+                  <div className="p-1.5 bg-orange-100 rounded-lg">
+                    <Activity size={14} className="text-orange-500" />
+                  </div>
+                  <span className="text-sm font-medium text-gray-600 dark:text-gray-300">
+                    Temperature
+                  </span>
+                </div>
+                <StatusBadge status={status} />
+              </div>
+              <div className="flex items-end gap-1 mb-3">
+                <p className="text-4xl font-bold text-gray-800 dark:text-gray-100 ">{latestTemp.toFixed(1)}</p>
+                <p className="text-sm text-gray-500 dark:text-gray-400 mb-1">°C</p>
+              </div>
+              <div className="h-12">
+                <SparklineChart data={tempData} color="#f97316" tooltip />
               </div>
             </div>
           </div>
@@ -562,6 +588,7 @@ export default function PatientDashboard() {
             vitals={{ 
               hr: latestHr, 
               spo2: latestSpo2, 
+              temp: latestTemp,
               bmi: bmiResult?.value 
             }} 
           />
