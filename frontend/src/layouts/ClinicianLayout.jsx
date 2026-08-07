@@ -7,12 +7,13 @@
  *  - Main content area (white cards on gray surface)
  */
 import { useState, useEffect, useRef } from "react";
-import { NavLink, Outlet, useNavigate, useLocation } from "react-router-dom";
-import {
+import AIModelSettings from "../components/AIModelSettings";
+import { NavLink, Outlet, useNavigate, useLocation } from "react-router-dom";import {
   Activity,
   LayoutDashboard,
   Users,
   Bell,
+  BrainCircuit,
   FileText,
   Settings,
   LogOut,
@@ -73,6 +74,7 @@ export default function ClinicianLayout() {
   const [alertsCount, setAlertsCount]     = useState(0);
   const [recentAlerts, setRecentAlerts]   = useState([]);
   const [showUserMenu, setShowUserMenu]   = useState(false);
+  const [showAIModal, setShowAIModal]     = useState(false);
   const [searchQuery, setSearchQuery]     = useState("");
   const [liveVitals, setLiveVitals]       = useState(null);
   const [sensorOnline, setSensorOnline]   = useState(false);
@@ -191,6 +193,16 @@ export default function ClinicianLayout() {
             {alertsCount > 0 && (
               <span className="absolute -top-0.5 -right-0.5 w-2 h-2 bg-coral-400 rounded-full ring-2 ring-white" />
             )}
+          </button>
+
+          {/* AI Settings */}
+          <button
+            onClick={() => setShowAIModal(true)}
+            className="relative icon-btn text-teal-600 hover:text-teal-700 bg-teal-50 hover:bg-teal-100"
+            aria-label="AI Settings"
+            title="AI Settings"
+          >
+            <BrainCircuit size={17} />
           </button>
 
           {/* User */}
@@ -433,6 +445,8 @@ export default function ClinicianLayout() {
           ))}
         </nav>
       </div>
+      
+      <AIModelSettings isOpen={showAIModal} onClose={() => setShowAIModal(false)} />
     </div>
   );
 }

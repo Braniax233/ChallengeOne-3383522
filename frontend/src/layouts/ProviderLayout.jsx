@@ -3,9 +3,10 @@
  */
 import { useState, useRef, useEffect } from "react";
 import { NavLink, Outlet, useNavigate, useLocation } from "react-router-dom";
+import AIModelSettings from "../components/AIModelSettings";
 import {
   Activity, LayoutDashboard, Camera, Users,
-  LogOut, Bell, Share2, Download, Star, Plus, Database, TrendingUp, Info, ChevronLeft,
+  LogOut, Bell, BrainCircuit, Share2, Download, Star, Plus, Database, TrendingUp, Info, ChevronLeft,
 } from "lucide-react";
 import { useAuth } from "../context/AuthContext";
 
@@ -28,6 +29,7 @@ export default function ProviderLayout() {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
   const [showMenu, setShowMenu] = useState(false);
+  const [showAIModal, setShowAIModal] = useState(false);
   const menuRef = useRef(null);
 
   useEffect(() => {
@@ -69,6 +71,14 @@ export default function ProviderLayout() {
         </nav>
 
         <div className="flex items-center gap-3 flex-shrink-0 ml-auto">
+          <button 
+            onClick={() => setShowAIModal(true)} 
+            className="icon-btn text-teal-600 hover:text-teal-700 bg-teal-50 hover:bg-teal-100" 
+            aria-label="AI Settings"
+            title="AI Settings"
+          >
+            <BrainCircuit size={17} />
+          </button>
           <button className="icon-btn" aria-label="Alerts"><Bell size={17} /></button>
           <div className="relative" ref={menuRef}>
             <button
@@ -141,6 +151,8 @@ export default function ProviderLayout() {
           ))}
         </nav>
       </div>
+      
+      <AIModelSettings isOpen={showAIModal} onClose={() => setShowAIModal(false)} />
     </div>
   );
 }
