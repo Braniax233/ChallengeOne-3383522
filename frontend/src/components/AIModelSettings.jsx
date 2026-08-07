@@ -52,9 +52,6 @@ export default function AIModelSettings({ isOpen, onClose }) {
               {availableModels.map(model => {
                 const isCached = cacheStatus[model.model_id];
                 const isSelected = selectedModelId === model.model_id;
-                
-                // Only show models that are cached or currently selected
-                if (!isCached && !isSelected) return null;
 
                 return (
                   <div key={model.model_id} className={`flex items-center justify-between p-3 rounded-lg border ${isSelected ? 'border-teal-500/50 bg-teal-500/10' : 'border-white/5 bg-[#0a0f1e]'}`}>
@@ -74,15 +71,27 @@ export default function AIModelSettings({ isOpen, onClose }) {
                       </div>
                     </div>
                     
-                    {isCached && (
-                      <button 
-                        onClick={() => deleteCache(model.model_id)}
-                        className="p-2 text-rose-400 hover:bg-rose-400/10 rounded-lg transition-colors"
-                        title="Delete cached model"
-                      >
-                        <Trash2 size={18} />
-                      </button>
-                    )}
+                    <div className="flex gap-2">
+                      {!isCached && !isSelected && (
+                        <button 
+                          onClick={() => switchModel(model.model_id)}
+                          className="px-3 py-1.5 text-teal-400 hover:bg-teal-400/10 rounded-lg transition-colors flex items-center gap-2 text-xs font-medium border border-teal-500/30"
+                          title="Download and set as active"
+                        >
+                          <DownloadCloud size={14} /> Download
+                        </button>
+                      )}
+                      
+                      {isCached && (
+                        <button 
+                          onClick={() => deleteCache(model.model_id)}
+                          className="p-2 text-rose-400 hover:bg-rose-400/10 rounded-lg transition-colors"
+                          title="Delete cached model"
+                        >
+                          <Trash2 size={18} />
+                        </button>
+                      )}
+                    </div>
                   </div>
                 );
               })}
