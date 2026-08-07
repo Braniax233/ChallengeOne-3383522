@@ -53,10 +53,21 @@ long lastBeat = 0;
 float beatsPerMinute;
 int beatAvg;
 
+// ── External Reset Button ────────────────────────────────────────────────────
+#define RESET_BTN_PIN D5 // Connect an external push button between D5 and GND
+
+ICACHE_RAM_ATTR void handleResetButton() {
+  ESP.restart(); // Instantly reboots the ESP8266 when the button is pressed
+}
+
 void setup() {
   Serial.begin(115200);
   Wire.begin();
   delay(100);
+
+  // Configure external reset button interrupt
+  pinMode(RESET_BTN_PIN, INPUT_PULLUP);
+  attachInterrupt(digitalPinToInterrupt(RESET_BTN_PIN), handleResetButton, FALLING);
 
   Serial.println("\n\n--- VitalWatch Booting ---");
 
