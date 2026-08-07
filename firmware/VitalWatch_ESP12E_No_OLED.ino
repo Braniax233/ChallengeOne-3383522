@@ -56,8 +56,21 @@ int beatAvg;
 // ── External Reset Button ────────────────────────────────────────────────────
 #define RESET_BTN_PIN D5 // Connect an external push button between D5 and GND
 
+volatile bool shouldReset = false;
+
 ICACHE_RAM_ATTR void handleResetButton() {
-  ESP.restart(); // Instantly reboots the ESP8266 when the button is pressed
+  shouldReset = true;
+}
+
+void smartDelay(long ms) {
+  long start = millis();
+  while (millis() - start < (unsigned long)ms) {
+    if (shouldReset) {
+      Serial.println("\n[System] External Reset Button Pressed! Restarting...");
+      ESP.restart();
+    }
+    delay(50);
+  }
 }
 
 void setup() {
@@ -117,7 +130,7 @@ void setup() {
 void loop() {
   if (!pulseOK) {
     Serial.println("Error: MAX30102 is missing. Cannot read vitals.");
-    delay(5000);
+    smartDelay(5000);
     return;
   }
 
@@ -125,7 +138,7 @@ void loop() {
   long irVal = pulseSensor.getIR();
   if (irVal < 50000) {
     Serial.println("Waiting for finger...");
-    delay(500);
+    smartDelay(500);
     return;
   }
 
@@ -212,5 +225,5 @@ void loop() {
 
   // ── Wait before next reading ───────────────────────────────────────────────
   Serial.println("\nNext reading in 30s. Press the RESET button on the board for an immediate capture.");
-  delay(30000);
+  smartDelay(30000);
 }
