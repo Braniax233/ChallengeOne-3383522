@@ -65,9 +65,14 @@ export default function AIModelSettings({ isOpen, onClose }) {
                         <p className="text-sm font-medium text-slate-200">
                           {model.model_id} {isSelected && <span className="text-xs text-teal-400 ml-2">(Active)</span>}
                         </p>
-                        <p className="text-xs text-slate-500">
+                        <div className="text-xs text-slate-500 mt-0.5">
                           {isCached ? 'Downloaded and ready offline' : 'Will download on next use'}
-                        </p>
+                          {model.vram_required_MB && (
+                            <span className="ml-2 inline-flex items-center gap-1 bg-white/5 px-2 py-0.5 rounded text-[10px]">
+                              ~{(model.vram_required_MB / 1024).toFixed(1)} GB
+                            </span>
+                          )}
+                        </div>
                       </div>
                     </div>
                     
