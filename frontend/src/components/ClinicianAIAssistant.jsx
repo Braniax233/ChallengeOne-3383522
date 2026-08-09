@@ -93,7 +93,7 @@ Provide a concise, professional clinical assessment. Use medical terminology app
           </div>
         ) : (
           <button 
-            onClick={init}
+            onClick={() => init()}
             className="w-full flex items-center justify-center gap-2 bg-white dark:bg-ink-800 text-teal-700 px-4 py-2.5 rounded-lg text-sm font-bold hover:bg-teal-50 transition-colors shadow-sm"
           >
             <Download size={16} /> {isCached ? "Load Offline Clinical AI" : "Download Offline Clinical AI"}

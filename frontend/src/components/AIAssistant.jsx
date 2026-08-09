@@ -91,7 +91,7 @@ Do NOT diagnose the patient. Offer general, non-diagnostic lifestyle advice base
           </div>
         ) : (
           <button 
-            onClick={init}
+            onClick={() => init()}
             className="w-full flex items-center justify-center gap-2 bg-white dark:bg-ink-800 text-indigo-700 px-4 py-3 rounded-xl text-sm font-bold hover:bg-indigo-50 transition-colors shadow-sm"
           >
             <Download size={18} /> {isCached ? "Load Offline AI" : "Download Offline AI"}

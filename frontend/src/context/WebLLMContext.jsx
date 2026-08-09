@@ -135,6 +135,7 @@ export function WebLLMProvider({ children }) {
         isInitializing,
         progressText,
         isReady,
+        isCached: cacheStatus[selectedModelId] || false,
         error,
         init,
         chat,
