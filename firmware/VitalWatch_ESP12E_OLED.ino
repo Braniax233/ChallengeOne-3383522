@@ -153,7 +153,8 @@ void setup() {
   // ── MAX30102 ───────────────────────────────────────────────────────────────
   if (pulseSensor.begin(Wire, I2C_SPEED_STANDARD)) {
     pulseOK = true;
-    pulseSensor.setup(60, 4, 2, 100, 411, 4096);
+    // Increased sampleAverage to 8 to reduce noise
+    pulseSensor.setup(60, 8, 2, 100, 411, 4096);
     pulseSensor.setPulseAmplitudeRed(0x1F);
     pulseSensor.setPulseAmplitudeIR(0x1F);
     Serial.println("[MAX30102] Ready.");
@@ -188,6 +189,15 @@ void loop() {
     updateOLED("Status:", "Waiting for finger...", "");
     smartDelay(500);
     return;
+  }
+
+  // ── Warm-up Phase (Discard initial noisy readings) ─────────────────────────
+  Serial.println("Finger detected. Calibrating sensor...");
+  updateOLED("Status:", "Calibrating...", "Keep finger still");
+  long startTime = millis();
+  while (millis() - startTime < 2000) {
+    pulseSensor.check(); // continually read and discard data
+    if (shouldReset) ESP.restart();
   }
 
   // ── Collect samples ────────────────────────────────────────────────────────
@@ -249,11 +259,18 @@ void loop() {
     tempC = tempSensor.readObjectTempC();
   }
 
-  // ── Apply Calibration Offsets ──────────────────────────────────────────────
-  if (hrValid)   hrVal += HR_OFFSET;
+  // ── Apply Calibration Offsets & Validation ─────────────────────────────────
+  if (hrValid) {
+    hrVal += HR_OFFSET;
+    // Sanity check for extreme HR
+    if (hrVal < 30 || hrVal > 220) hrValid = 0;
+  }
+  
   if (spo2Valid) {
     spo2Val += SPO2_OFFSET;
     if (spo2Val > 100) spo2Val = 100; // Cap at 100%
+    // Sanity check for extremely low SpO2 (usually means bad reading)
+    if (spo2Val < 70) spo2Valid = 0; 
   }
   if (tempOK)    tempC += TEMP_OFFSET;
 
