@@ -1,6 +1,6 @@
 import React from 'react';
 import { useWebLLMContext } from '../context/WebLLMContext';
-import { Trash2, CheckCircle2, DownloadCloud } from 'lucide-react';
+import { Trash2, CheckCircle2, DownloadCloud, Loader2, BrainCircuit } from 'lucide-react';
 
 export default function AIModelSettings({ isOpen, onClose }) {
   const { 
@@ -8,7 +8,11 @@ export default function AIModelSettings({ isOpen, onClose }) {
     availableModels, 
     cacheStatus, 
     switchModel, 
-    deleteCache 
+    deleteCache,
+    isReady,
+    isInitializing,
+    progressText,
+    init
   } = useWebLLMContext();
 
   if (!isOpen) return null;
@@ -41,9 +45,36 @@ export default function AIModelSettings({ isOpen, onClose }) {
                 </option>
               ))}
             </select>
-            <p className="text-xs text-slate-500 mt-2">
+            <p className="text-xs text-slate-500 mt-2 mb-4">
               Select a model. Larger models are smarter but require more memory and take longer to download initially.
             </p>
+
+            {!isReady && !isInitializing && (
+                <button 
+                  onClick={() => init()} 
+                  className="w-full bg-teal-600 hover:bg-teal-500 text-white font-medium py-2.5 rounded-lg flex items-center justify-center gap-2 transition-colors shadow-sm"
+                >
+                  <BrainCircuit size={18} />
+                  {cacheStatus[selectedModelId] ? "Start Offline AI Engine" : "Download & Start AI Engine"}
+                </button>
+            )}
+            
+            {isInitializing && (
+                <div className="w-full bg-teal-900/30 text-teal-400 font-medium py-2.5 rounded-lg flex flex-col items-center justify-center gap-2 border border-teal-500/30">
+                  <div className="flex items-center gap-2">
+                    <Loader2 size={16} className="animate-spin" />
+                    <span className="text-sm">Starting AI Engine...</span>
+                  </div>
+                  <span className="text-xs opacity-75">{progressText}</span>
+                </div>
+            )}
+            
+            {isReady && (
+                <div className="w-full bg-emerald-900/30 text-emerald-400 font-medium py-2.5 rounded-lg flex items-center justify-center gap-2 border border-emerald-500/30">
+                  <CheckCircle2 size={18} />
+                  AI Engine is Running
+                </div>
+            )}
           </div>
 
           <div>
