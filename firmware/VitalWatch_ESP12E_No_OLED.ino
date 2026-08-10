@@ -36,6 +36,12 @@ FirebaseConfig fireConfig;
 MAX30105          pulseSensor;
 Adafruit_MLX90614 tempSensor;
 
+// ── Calibration Offsets ──────────────────────────────────────────────────────
+// Tweak these values to calibrate your sensors against a real medical device
+const float TEMP_OFFSET = 0.0; // e.g. +2.5 to adjust skin temp to core temp
+const int   SPO2_OFFSET = 0;   // e.g. +3 if SpO2 always reads slightly low
+const int   HR_OFFSET   = 0;   // Usually 0, but can be tweaked if needed
+
 // ── Buffers ──────────────────────────────────────────────────────────────────
 #define SAMPLES 100
 uint32_t irBuf[SAMPLES];
@@ -199,6 +205,14 @@ void loop() {
   if (tempOK) {
     tempC = tempSensor.readObjectTempC();
   }
+
+  // ── Apply Calibration Offsets ──────────────────────────────────────────────
+  if (hrValid)   hrVal += HR_OFFSET;
+  if (spo2Valid) {
+    spo2Val += SPO2_OFFSET;
+    if (spo2Val > 100) spo2Val = 100; // Cap at 100%
+  }
+  if (tempOK)    tempC += TEMP_OFFSET;
 
   // ── Print to Serial ────────────────────────────────────────────────────────
   Serial.println("──────────────────────────");
