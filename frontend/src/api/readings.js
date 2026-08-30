@@ -6,7 +6,7 @@
  * Latest vital from device: /vitals/latest  (written by ESP8266)
  */
 
-import { ref, push, set, get, query, orderByChild, limitToLast } from 'firebase/database';
+import { ref, push, set, get, query, orderByChild, equalTo, limitToLast } from 'firebase/database';
 import { rtdb } from './firebase';
 import { sendAlertSMS } from './sms';
 
@@ -17,7 +17,19 @@ import { sendAlertSMS } from './sms';
  * @returns {string} the generated reading key
  */
 export async function saveReading(patientId, data) {
+  // Fetch patient profile to ensure name and phone are always attached
+  let patientInfo = {};
+  try {
+    const snap = await get(ref(rtdb, `users/${patientId}`));
+    if (snap.exists()) {
+      patientInfo = snap.val();
+    }
+  } catch { /* ignore */ }
+
   const payload = {
+    patientName: patientInfo.name || '',
+    memberId: patientInfo.memberId || '',
+    patientPhone: patientInfo.phone || '',
     ...data,
     timestamp: Date.now(),
   };
