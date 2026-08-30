@@ -15,7 +15,7 @@ import StatusBadge from "../../components/StatusBadge";
 import LoadingSpinner from "../../components/LoadingSpinner";
 import EmptyState from "../../components/EmptyState";
 import { useAuth } from "../../context/AuthContext";
-import { MOCK_READINGS } from "../../api/mockData";
+
 
 // Normalize imported MOCK_READINGS to the field shape the JSX expects
 const normalizeReadings = (readings) =>

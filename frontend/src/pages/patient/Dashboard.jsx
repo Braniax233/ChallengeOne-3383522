@@ -31,7 +31,7 @@ import SparklineChart from "../../components/SparklineChart";
 import LoadingSpinner from "../../components/LoadingSpinner";
 import AIAssistant from "../../components/AIAssistant";
 import { useAuth } from "../../context/AuthContext";
-import { MOCK_PATIENTS, MOCK_READINGS, getChartData } from "../../api/mockData";
+import { getChartData } from "../../api/mockData";
 
 // ── Helpers ────────────────────────────────────────────────────────────────────
 const calcBMI = (weight, height) => {
@@ -95,14 +95,7 @@ const STATUS_BANNER = {
   },
 };
 
-const MOCK_CONTACTS = [
-  {
-    name: "Dr. Sarah Adams",
-    role: "Primary Clinician",
-    phone: "+1 (555) 123-4567",
-  },
-  { name: "Mary Smith", role: "Emergency Contact", phone: "+1 (555) 765-4321" },
-];
+
 
 const generateHistory = () =>
   Array.from({ length: 12 }, (_, i) => ({

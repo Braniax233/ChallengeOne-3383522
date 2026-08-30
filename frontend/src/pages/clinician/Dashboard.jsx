@@ -13,9 +13,7 @@ import StatusBadge from "../../components/StatusBadge";
 import SparklineChart from "../../components/SparklineChart";
 import LoadingSpinner from "../../components/LoadingSpinner";
 import EmptyState from "../../components/EmptyState";
-import {
-  MOCK_PATIENTS, MOCK_ALERTS, MOCK_DASHBOARD_STATS, getLiveOverviewData,
-} from "../../api/mockData";
+import { getLiveOverviewData } from "../../api/mockData";
 
 // ── Helpers ────────────────────────────────────────────────────────────────────
 const getInitials = (name = "") =>
@@ -27,7 +25,9 @@ const formatTimeAgo = (date) => {
   if (secs < 60) return `${secs}s ago`;
   const mins = Math.floor(secs / 60);
   if (mins < 60) return `${mins}m ago`;
-  return `${Math.floor(mins / 60)}h ago`;
+  const hours = Math.floor(mins / 60);
+  if (hours < 24) return `${hours}h ago`;
+  return `${Math.floor(hours / 24)}d ago`;
 };
 
 const generateLiveData = () =>
@@ -125,19 +125,29 @@ export default function ClinicianDashboard() {
     })();
   }, []);
 
+  const criticalPatients = patients.filter((p) => (p.status || "").toUpperCase() === "CRITICAL");
+  const warningPatients  = patients.filter((p) => (p.status || "").toUpperCase() === "WARNING");
+
   const derivedTrends = [
     { disease: "Critical Anomalies", characteristic: "Critical", patients: stats.critical, recoveries: 0 },
     { disease: "Elevated Risks",     characteristic: "Warning",  patients: stats.warning,  recoveries: 0 },
     { disease: "Stable Vitals",      characteristic: "Normal",   patients: stats.normal,   recoveries: 0 },
   ];
 
-  const derivedAppointments = patients
-    .filter(p => (p.status || "").toUpperCase() === "WARNING" || (p.status || "").toUpperCase() === "CRITICAL")
-    .slice(0, 3)
-    .map((p, i) => ({ time: `${10 + i}:00 AM`, patient: p.name, type: "Follow-up Review" }));
-    
+  const derivedAppointments = [];
+  
+  // Schedule CRITICAL patients for early review
+  criticalPatients.slice(0, 2).forEach((p, i) => {
+    derivedAppointments.push({ time: `09:${i * 30 === 0 ? '00' : '30'} AM`, patient: p.name, type: "Urgent Review" });
+  });
+
+  // Schedule WARNING patients for follow-ups
+  warningPatients.slice(0, 3 - derivedAppointments.length).forEach((p, i) => {
+    derivedAppointments.push({ time: `${10 + i}:00 AM`, patient: p.name, type: "Follow-up Check" });
+  });
+
   if (derivedAppointments.length === 0 && patients.length > 0) {
-    derivedAppointments.push({ time: "09:00 AM", patient: patients[0].name, type: "Routine Check-up" });
+    derivedAppointments.push({ time: "10:00 AM", patient: patients[0].name, type: "Routine Check-up" });
   }
 
   if (loading) return <LoadingSpinner message="Loading dashboard…" />;

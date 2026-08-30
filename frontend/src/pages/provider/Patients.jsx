@@ -6,7 +6,7 @@ import StatusBadge from "../../components/StatusBadge";
 import LoadingSpinner from "../../components/LoadingSpinner";
 import EmptyState from "../../components/EmptyState";
 
-// Normalize imported MOCK_PATIENTS to the field shape the JSX expects
+// Normalize patients to the field shape the JSX expects
 const normalizePts = (pts) =>
   pts.map((p) => ({
     ...p,
@@ -36,10 +36,13 @@ const getInitials = (name = "") =>
 
 const formatTimeAgo = (date) => {
   if (!date) return "—";
-  const m = Math.floor((Date.now() - new Date(date).getTime()) / 60000);
-  if (m < 1) return "Just now";
-  if (m < 60) return `${m}m ago`;
-  return `${Math.floor(m / 60)}h ago`;
+  const secs = Math.floor((Date.now() - new Date(date).getTime()) / 1000);
+  if (secs < 60) return `${secs}s ago`;
+  const mins = Math.floor(secs / 60);
+  if (mins < 60) return `${mins}m ago`;
+  const hours = Math.floor(mins / 60);
+  if (hours < 24) return `${hours}h ago`;
+  return `${Math.floor(hours / 24)}d ago`;
 };
 
 export default function ProviderPatients() {
