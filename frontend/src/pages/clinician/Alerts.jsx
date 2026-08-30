@@ -1,6 +1,6 @@
 import { useState, useEffect, useMemo } from "react";
 import {
-  AlertTriangle, CheckCircle, MapPin, Clock, User, Bell,
+  AlertTriangle, CheckCircle, MapPin, Clock, User, Bell, MessageSquare,
 } from "lucide-react";
 import { getAlerts, resolveAlert } from "../../api/alerts";
 import StatusBadge from "../../components/StatusBadge";
@@ -8,6 +8,7 @@ import LoadingSpinner from "../../components/LoadingSpinner";
 import EmptyState from "../../components/EmptyState";
 import { useWebLLMContext } from "../../context/WebLLMContext";
 import { Sparkles, Loader2 } from "lucide-react";
+import { sendSMS } from "../../api/sms";
 
 const formatTimeAgo = (d) => {
   if (!d) return "—";
@@ -42,6 +43,8 @@ export default function Alerts() {
   const [loading,   setLoading]   = useState(true);
   const [filter,    setFilter]    = useState("all");
   const [resolving, setResolving] = useState(null);
+  const [smsSending, setSmsSending] = useState(null);
+  const [smsResults,  setSmsResults]  = useState({});
   
   const { chat, isReady } = useWebLLMContext();
   const [triageResults, setTriageResults] = useState({});
@@ -85,6 +88,33 @@ export default function Alerts() {
       setTriageResults(prev => ({ ...prev, [alert._id]: "Analysis failed." }));
     } finally {
       setAnalyzing(null);
+    }
+  };
+
+  const handleSendSMS = async (alert) => {
+    if (smsSending === alert._id) return;
+    setSmsSending(alert._id);
+    setSmsResults(prev => ({ ...prev, [alert._id]: null }));
+    try {
+      const phone = alert.phone || alert.patientPhone;
+      if (!phone) {
+        setSmsResults(prev => ({ ...prev, [alert._id]: { success: false, error: "No phone number on record for this patient." } }));
+        return;
+      }
+      const status = (alert.severity || "WARNING").toUpperCase();
+      const emoji  = status === "CRITICAL" ? "URGENT" : "Warning";
+      const message =
+        `[MediMonitor ${emoji}] Dear ${alert.patientName}, ` +
+        `an abnormal vital sign has been detected. ` +
+        `HR: ${alert.hr} bpm, SpO2: ${alert.spo2}%, ` +
+        `Temp: ${alert.temp ? alert.temp.toFixed(1) : "--"}°C. ` +
+        `Please consult your clinician immediately.`;
+      const result = await sendSMS(phone, message);
+      setSmsResults(prev => ({ ...prev, [alert._id]: result }));
+    } catch (err) {
+      setSmsResults(prev => ({ ...prev, [alert._id]: { success: false, error: "Unexpected error." } }));
+    } finally {
+      setSmsSending(null);
     }
   };
 
@@ -232,6 +262,19 @@ export default function Alerts() {
                         )}
                       </button>
                     )}
+                    {!isResolved && (
+                      <button
+                        onClick={() => handleSendSMS(alert)}
+                        disabled={smsSending === alert._id}
+                        title="Send SMS alert to patient"
+                        className="flex items-center gap-1.5 px-3 py-1.5 bg-emerald-50 hover:bg-emerald-100 text-emerald-700 border border-emerald-200 text-xs font-semibold rounded-lg transition-colors disabled:opacity-60"
+                      >
+                        {smsSending === alert._id
+                          ? <Loader2 size={13} className="animate-spin" />
+                          : <MessageSquare size={13} />}
+                        {smsSending === alert._id ? "Sending…" : "Send SMS"}
+                      </button>
+                    )}
                     {isReady && !triageResults[alert._id] && !isResolved && (
                       <button
                         onClick={() => handleTriage(alert)}
@@ -249,6 +292,20 @@ export default function Alerts() {
                     )}
                   </div>
                 </div>
+
+                {/* SMS Result */}
+                {smsResults[alert._id] && (
+                  <div className={`mt-3 p-3 rounded-lg flex items-start gap-2 text-xs font-medium ${
+                    smsResults[alert._id].success
+                      ? "bg-emerald-50 border border-emerald-100 text-emerald-800"
+                      : "bg-red-50 border border-red-100 text-red-700"
+                  }`}>
+                    <MessageSquare size={13} className="mt-0.5 flex-shrink-0" />
+                    {smsResults[alert._id].success
+                      ? "SMS alert sent successfully to patient."
+                      : `SMS failed: ${smsResults[alert._id].error}`}
+                  </div>
+                )}
 
                 {/* AI Triage Result */}
                 {triageResults[alert._id] && (

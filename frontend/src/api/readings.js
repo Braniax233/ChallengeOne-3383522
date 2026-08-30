@@ -8,11 +8,12 @@
 
 import { ref, push, set, get, query, orderByChild, limitToLast } from 'firebase/database';
 import { rtdb } from './firebase';
+import { sendAlertSMS } from './sms';
 
 /**
  * Save a reading linked to a patient.
  * @param {string} patientId  – uid or patient doc id
- * @param {object} data       – { spo2, heartRate, status, bmi?, weight?, height?, capturedBy? }
+ * @param {object} data       – { spo2, heartRate, status, bmi?, weight?, height?, capturedBy?, patientName?, patientPhone? }
  * @returns {string} the generated reading key
  */
 export async function saveReading(patientId, data) {
@@ -32,8 +33,19 @@ export async function saveReading(patientId, data) {
   const readingsRef = ref(rtdb, `readings/${patientId}`);
   const newRef = push(readingsRef);
   await set(newRef, payload);
+
+  // Auto-send SMS alert for WARNING or CRITICAL readings
+  const status = (payload.status || '').toUpperCase();
+  if ((status === 'CRITICAL' || status === 'WARNING') && payload.patientPhone) {
+    sendAlertSMS(
+      { name: payload.patientName || 'Patient', phone: payload.patientPhone },
+      { heartRate: payload.heartRate, spo2: payload.spo2, temperature: payload.temperature, status }
+    ).catch((err) => console.warn('[SMS] Auto-alert failed:', err));
+  }
+
   return newRef.key;
 }
+
 
 /**
  * Sync offline readings to Firebase when back online.
