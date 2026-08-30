@@ -30,6 +30,7 @@ import ProviderPatients from "./pages/provider/Patients";
 import PatientDashboard from "./pages/patient/Dashboard";
 import PatientHistory from "./pages/patient/History";
 import PatientCapture from "./pages/patient/CaptureReading";
+import PatientSMSSettings from "./pages/patient/SMSSettings";
 
 // ── Protected route guard ────────────────────────────────────────────────────
 /**
@@ -155,6 +156,7 @@ export default function App() {
         <Route path="dashboard" element={<PatientDashboard />} />
         <Route path="history" element={<PatientHistory />} />
         <Route path="capture" element={<PatientCapture />} />
+        <Route path="sms-settings" element={<PatientSMSSettings />} />
       </Route>
 
       {/* Catch-all → login */}

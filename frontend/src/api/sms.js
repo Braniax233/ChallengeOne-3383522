@@ -72,11 +72,101 @@ export async function sendSMS(recipients, message) {
 }
 
 /**
- * Send an alert SMS to a patient's registered phone number.
- * Call this when a CRITICAL or WARNING reading is saved.
+ * Build a fallback (non-AI) alert message.
+ */
+function buildFallbackMessage(patient, reading, location) {
+  const status = (reading.status || "WARNING").toUpperCase();
+  const urgency = status === "CRITICAL" ? "URGENT" : "Warning";
+  const locStr  = location
+    ? ` Location: https://maps.google.com/?q=${location.lat.toFixed(5)},${location.lng.toFixed(5)}`
+    : "";
+
+  return (
+    `[MediMonitor ${urgency}] ${patient.name} has an abnormal reading. ` +
+    `HR: ${reading.heartRate} bpm, SpO2: ${reading.spo2}%, ` +
+    `Temp: ${(reading.temperature || 0).toFixed(1)}°C. ` +
+    `Please seek medical attention immediately.` +
+    locStr
+  );
+}
+
+/**
+ * Build an AI-enhanced alert message.
+ * Falls back to template if AI takes too long or fails.
+ */
+async function buildAIMessage(patient, reading, location, chatFn) {
+  if (!chatFn) return null;
+
+  try {
+    const status = (reading.status || "WARNING").toUpperCase();
+    const prompt =
+      `You are an emergency medical SMS assistant. Write a short, clear SMS alert for a patient named ${patient.name}. ` +
+      `Their vitals are: Heart Rate ${reading.heartRate} bpm, SpO2 ${reading.spo2}%, ` +
+      `Temp ${(reading.temperature || 0).toFixed(1)}°C. Status: ${status}. ` +
+      `Keep it under 120 characters. Be calm but urgent. Do not add disclaimers.`;
+
+    // Race the AI against a 6 second timeout
+    const aiResponse = await Promise.race([
+      chatFn(prompt, "Write an SMS alert."),
+      new Promise((_, rej) => setTimeout(() => rej(new Error("timeout")), 6000)),
+    ]);
+
+    if (!aiResponse) return null;
+
+    // Append location if available
+    const locStr = location
+      ? ` Location: https://maps.google.com/?q=${location.lat.toFixed(5)},${location.lng.toFixed(5)}`
+      : "";
+
+    return `[MediMonitor] ${aiResponse.trim()}${locStr}`;
+  } catch {
+    return null; // Fall back to template
+  }
+}
+
+/**
+ * sendSmartAlert — The main function.
+ * Reads the patient's SMS settings, gets their location if allowed,
+ * builds a message (AI-enhanced if available), and sends to all contacts.
  *
- * @param {object} patient   – Must have: name, phone
- * @param {object} reading   – Must have: heartRate, spo2, temperature, status
+ * @param {object}   patient    – { uid, name, phone }
+ * @param {object}   reading    – { heartRate, spo2, temperature, status }
+ * @param {object}   settings   – The patient's SMS settings (from getSmsSettings)
+ * @param {function|null} chatFn – The WebLLM chat() function, or null if AI is not ready
+ * @param {object|null}  location – { lat, lng } already fetched, or null
+ * @returns {Promise<void>}
+ */
+export async function sendSmartAlert(patient, reading, settings, chatFn = null, location = null) {
+  if (!settings?.enabled) return;
+
+  const status = (reading.status || "NORMAL").toUpperCase();
+  if (status === "NORMAL") return;
+  if (status === "WARNING"  && !settings.notifyOnWarning)  return;
+  if (status === "CRITICAL" && !settings.notifyOnCritical) return;
+
+  // Collect all recipient numbers: patient's own phone + all added contacts
+  const recipients = [];
+  if (patient.phone) recipients.push(patient.phone);
+  for (const c of settings.contacts || []) {
+    if (c.phone) recipients.push(c.phone);
+  }
+  if (recipients.length === 0) return;
+
+  // Build message
+  let message;
+  if (chatFn) {
+    message = await buildAIMessage(patient, reading, location, chatFn);
+  }
+  if (!message) {
+    message = buildFallbackMessage(patient, reading, location);
+  }
+
+  // Send to all recipients
+  await sendSMS(recipients, message);
+}
+
+/**
+ * Send a plain alert SMS to a patient (used manually from Alerts page).
  */
 export async function sendAlertSMS(patient, reading) {
   const status = (reading.status || "WARNING").toUpperCase();
@@ -94,9 +184,6 @@ export async function sendAlertSMS(patient, reading) {
 
 /**
  * Send an alert SMS to the clinician on duty.
- * @param {string} clinicianPhone  Clinician phone number.
- * @param {object} patient         Must have: name, memberId
- * @param {object} reading         Must have: heartRate, spo2, temperature, status
  */
 export async function sendClinicianAlertSMS(clinicianPhone, patient, reading) {
   const status = (reading.status || "WARNING").toUpperCase();
@@ -110,3 +197,4 @@ export async function sendClinicianAlertSMS(clinicianPhone, patient, reading) {
 
   return sendSMS(clinicianPhone, message);
 }
+

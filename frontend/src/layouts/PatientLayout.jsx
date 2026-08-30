@@ -3,20 +3,22 @@ import { NavLink, Outlet, useNavigate } from "react-router-dom";
 import AIModelSettings from "../components/AIModelSettings";
 import {
   Activity, LayoutDashboard, History, Phone, Calculator,
-  LogOut, Bell, BrainCircuit, Share2, Download, Star, Plus, Database, TrendingUp, Info, ChevronLeft,
+  LogOut, Bell, BrainCircuit, Share2, Download, Star, Plus, Database, TrendingUp, Info, ChevronLeft, MessageSquare,
 } from "lucide-react";
 import { useAuth } from "../context/AuthContext";
 
 const TOP_NAV = [
-  { label: "My Dashboard",      to: "/patient/dashboard", end: true  },
-  { label: "My History",        to: "/patient/history",   end: true  },
-  { label: "Capture Reading",   to: "/patient/capture",   end: true  },
+  { label: "My Dashboard",      to: "/patient/dashboard",    end: true  },
+  { label: "My History",        to: "/patient/history",      end: true  },
+  { label: "Capture Reading",   to: "/patient/capture",      end: true  },
+  { label: "SMS Settings",      to: "/patient/sms-settings", end: true  },
 ];
 
 const LEFT_ACTIONS = [
-  { icon: LayoutDashboard, label: "Dashboard", to: "/patient/dashboard", end: true },
-  { icon: History,         label: "History",   to: "/patient/history",   end: true },
-  { icon: Plus,            label: "Capture",   to: "/patient/capture",   end: true },
+  { icon: LayoutDashboard, label: "Dashboard",    to: "/patient/dashboard",    end: true },
+  { icon: History,         label: "History",      to: "/patient/history",      end: true },
+  { icon: Plus,            label: "Capture",      to: "/patient/capture",      end: true },
+  { icon: MessageSquare,   label: "SMS Settings", to: "/patient/sms-settings", end: true },
 ];
 
 const getInitials = (name = "") =>

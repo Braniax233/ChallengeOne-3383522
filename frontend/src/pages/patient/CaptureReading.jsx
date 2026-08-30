@@ -4,6 +4,9 @@ import { Heart, Activity, CheckCircle, AlertCircle, Wifi, RotateCcw, WifiOff } f
 import { useAuth } from '../../context/AuthContext';
 import useVitalsListener from '../../hooks/useVitalsListener';
 import { saveReading, classifyReading } from '../../api/readings';
+import { sendSmartAlert } from '../../api/sms';
+import { getSmsSettings, getCurrentLocation } from '../../api/smsSettings';
+import { useWebLLMContext } from '../../context/WebLLMContext';
 
 const STATUS_STYLES = {
   NORMAL:   { card: 'bg-teal-50 border-teal-300',  badge: 'bg-teal-500 text-white',  icon: CheckCircle, msg: 'Your vitals look great! Keep it up.' },
@@ -15,6 +18,7 @@ export default function PatientCapture() {
   const navigate  = useNavigate();
   const { user }  = useAuth();
   const { latestReading, waiting, startListening, stopListening } = useVitalsListener();
+  const { chat, isReady } = useWebLLMContext();
 
   const [reading, setReading] = useState(null);
   const [saving, setSaving]   = useState(false);
@@ -40,6 +44,31 @@ export default function PatientCapture() {
     };
   }, []);
 
+  // ── Fire smart SMS alert after saving ────────────────────────────────────────
+  const fireSmsAlert = async (r) => {
+    if (!user) return;
+    try {
+      const settings = await getSmsSettings(user.uid);
+      if (!settings?.enabled) return;
+
+      // Attempt to get location if the patient enabled it
+      let location = null;
+      if (settings.shareLocation) {
+        try { location = await getCurrentLocation(); } catch { /* permission denied */ }
+      }
+
+      await sendSmartAlert(
+        { uid: user.uid, name: user.name || 'Patient', phone: user.phone },
+        { heartRate: r.hr, spo2: r.spo2, temperature: r.temp, status: r.status },
+        settings,
+        isReady ? chat : null,
+        location
+      );
+    } catch (err) {
+      console.warn('[SMS] Smart alert failed:', err);
+    }
+  };
+
   // ── When device data arrives ──────────────────────────────────────────────
   useEffect(() => {
     if (!latestReading || !user) return;
@@ -59,10 +88,13 @@ export default function PatientCapture() {
           capturedBy:     user.uid,
           captureContext: 'home',
         });
+        // Fire SMS in the background, don't block the UI
+        fireSmsAlert(r);
       } catch { /* silent */ }
       setSaving(false);
     })();
   }, [latestReading]);
+
 
   // ── Manual submit ─────────────────────────────────────────────────────────
   const handleManualSubmit = async () => {
@@ -81,6 +113,7 @@ export default function PatientCapture() {
         capturedBy:     user.uid,
         captureContext: 'home',
       });
+      fireSmsAlert(r);
     } catch { /* silent */ }
     setSaving(false);
   };
