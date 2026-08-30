@@ -12,10 +12,11 @@ import { useState, useEffect } from 'react';
 import {
   MessageSquare, Plus, Trash2, MapPin, Bell, BellOff,
   ShieldCheck, AlertTriangle, User, Phone, Heart, Save,
-  Loader2, CheckCircle, ToggleLeft, ToggleRight, Navigation,
+  Loader2, CheckCircle, ToggleLeft, ToggleRight, Navigation, Send,
 } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
 import { getSmsSettings, saveSmsSettings, addContact, removeContact, getCurrentLocation } from '../../api/smsSettings';
+import { sendSMS } from '../../api/sms';
 
 function Toggle({ value, onChange, label, icon: Icon, color = 'teal' }) {
   const colors = {
@@ -58,6 +59,10 @@ export default function SMSSettings() {
   // Location test
   const [locTesting,  setLocTesting]  = useState(false);
   const [locResult,   setLocResult]   = useState(null);
+
+  // Test SMS
+  const [testSending, setTestSending] = useState(false);
+  const [testResult,  setTestResult]  = useState(null);
 
   useEffect(() => {
     if (!user) return;
@@ -109,6 +114,20 @@ export default function SMSSettings() {
     setLocTesting(false);
   };
 
+  const handleTestSMS = async () => {
+    const phone = user?.phone;
+    if (!phone) {
+      setTestResult({ success: false, error: 'No phone number on your account. Update your profile first.' });
+      return;
+    }
+    setTestSending(true);
+    setTestResult(null);
+    const result = await sendSMS(phone, `[MediMonitor Test] Hello ${user?.name || 'there'}! Your SMS alerts are working correctly. This is a test message from MediMonitor.`);
+    setTestResult(result);
+    setTestSending(false);
+    setTimeout(() => setTestResult(null), 8000);
+  };
+
   if (loading) {
     return (
       <div className="flex items-center justify-center py-16">
@@ -120,7 +139,7 @@ export default function SMSSettings() {
   return (
     <div className="max-w-xl mx-auto space-y-6 animate-fade-in">
       {/* Header */}
-      <div className="flex items-center justify-between">
+      <div className="flex items-start justify-between gap-3 flex-wrap">
         <div>
           <h2 className="text-lg font-bold text-ink-900 dark:text-gray-100 flex items-center gap-2">
             <MessageSquare size={20} className="text-teal-500" />
@@ -130,15 +149,42 @@ export default function SMSSettings() {
             Get a text message when your vitals are abnormal
           </p>
         </div>
-        <button
-          onClick={handleSave}
-          disabled={saving}
-          className="flex items-center gap-1.5 px-4 py-2 bg-teal-500 hover:bg-teal-600 text-white text-sm font-semibold rounded-xl transition-colors disabled:opacity-60"
-        >
-          {saving ? <Loader2 size={14} className="animate-spin" /> : saved ? <CheckCircle size={14} /> : <Save size={14} />}
-          {saving ? 'Saving…' : saved ? 'Saved!' : 'Save'}
-        </button>
+        <div className="flex items-center gap-2">
+          <button
+            onClick={handleTestSMS}
+            disabled={testSending}
+            title={user?.phone ? `Send test SMS to ${user.phone}` : 'No phone number on account'}
+            className="flex items-center gap-1.5 px-4 py-2 bg-emerald-50 hover:bg-emerald-100 text-emerald-700 border border-emerald-200 text-sm font-semibold rounded-xl transition-colors disabled:opacity-60"
+          >
+            {testSending ? <Loader2 size={14} className="animate-spin" /> : <Send size={14} />}
+            {testSending ? 'Sending…' : 'Test SMS'}
+          </button>
+          <button
+            onClick={handleSave}
+            disabled={saving}
+            className="flex items-center gap-1.5 px-4 py-2 bg-teal-500 hover:bg-teal-600 text-white text-sm font-semibold rounded-xl transition-colors disabled:opacity-60"
+          >
+            {saving ? <Loader2 size={14} className="animate-spin" /> : saved ? <CheckCircle size={14} /> : <Save size={14} />}
+            {saving ? 'Saving…' : saved ? 'Saved!' : 'Save'}
+          </button>
+        </div>
       </div>
+
+      {/* Test SMS result */}
+      {testResult && (
+        <div className={`flex items-start gap-2.5 p-4 rounded-xl text-sm font-medium border ${
+          testResult.success
+            ? 'bg-emerald-50 border-emerald-200 text-emerald-800'
+            : 'bg-red-50 border-red-200 text-red-700'
+        }`}>
+          {testResult.success ? <CheckCircle size={16} className="mt-0.5 flex-shrink-0" /> : <Send size={16} className="mt-0.5 flex-shrink-0" />}
+          <div>
+            {testResult.success
+              ? `Test SMS sent successfully to ${user?.phone}! Check your phone.`
+              : `Failed: ${testResult.error}`}
+          </div>
+        </div>
+      )}
 
       {/* Main toggles */}
       <div className="vx-card p-5 space-y-3">
