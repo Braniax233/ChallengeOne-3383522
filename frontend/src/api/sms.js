@@ -10,7 +10,7 @@
  */
 
 const SASUSYNC_API_KEY = "ss_ae1532ce19a2928d402d701b8477d688b05061109abdfe04bdf9481e108e69fa";
-const SASUSYNC_BASE    = "https://sms.sasusync.com/api/v1";
+const SASUSYNC_BASE    = "/api/sasusync"; // Proxied by Vite locally and Vercel in production
 const SENDER_ID        = "Vitalx"; // The name recipients see on their phone
 
 /**
@@ -43,7 +43,7 @@ export async function sendSMS(recipients, message) {
   }
 
   try {
-    const res = await fetch(`${SASUSYNC_BASE}/send`, {
+    const res = await fetch(SASUSYNC_BASE, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

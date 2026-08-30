@@ -1,6 +1,10 @@
 {
   "rewrites": [
     {
+      "source": "/api/sasusync",
+      "destination": "https://sms.sasusync.com/api/v1/send"
+    },
+    {
       "source": "/(.*)",
       "destination": "/index.html"
     }

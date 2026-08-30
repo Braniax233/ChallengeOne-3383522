@@ -6,4 +6,13 @@ export default defineConfig({
   plugins: [
     react()
   ],
+  server: {
+    proxy: {
+      '/api/sasusync': {
+        target: 'https://sms.sasusync.com/api/v1/send',
+        changeOrigin: true,
+        rewrite: (path) => path.replace(/^\/api\/sasusync/, '')
+      }
+    }
+  }
 })
