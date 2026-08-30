@@ -129,7 +129,7 @@ export default function SMSSettings() {
 
     setTestSending(true);
     setTestResult(null);
-    const result = await sendSMS(recipients, `[MediMonitor Test] Hello ${user?.name || 'there'}! Your SMS alerts are working correctly. This is a test message from MediMonitor.`);
+    const result = await sendSMS(recipients, `[VitalX Test] Hello ${user?.name || 'there'}! Your SMS alerts are working correctly. This is a test message from VitalX.`);
     
     // Customize success message based on how many were sent
     if (result.success) {

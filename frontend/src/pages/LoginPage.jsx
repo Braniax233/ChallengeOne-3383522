@@ -172,7 +172,7 @@ export default function LoginPage() {
           </div>
           <div>
             <p className="text-white font-bold text-xl leading-none">VitalX</p>
-            <p className="text-teal-200 text-[11px] tracking-widest uppercase mt-0.5">MediMonitor</p>
+            <p className="text-teal-200 text-[11px] tracking-widest uppercase mt-0.5">VitalX</p>
           </div>
         </div>
 

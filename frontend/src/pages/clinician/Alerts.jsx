@@ -104,7 +104,7 @@ export default function Alerts() {
       const status = (alert.severity || "WARNING").toUpperCase();
       const emoji  = status === "CRITICAL" ? "URGENT" : "Warning";
       const message =
-        `[MediMonitor ${emoji}] Dear ${alert.patientName}, ` +
+        `[VitalX ${emoji}] Dear ${alert.patientName}, ` +
         `an abnormal vital sign has been detected. ` +
         `HR: ${alert.hr} bpm, SpO2: ${alert.spo2}%, ` +
         `Temp: ${alert.temp ? alert.temp.toFixed(1) : "--"}°C. ` +

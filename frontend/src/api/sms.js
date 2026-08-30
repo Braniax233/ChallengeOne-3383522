@@ -1,6 +1,6 @@
 /**
  * api/sms.js
- * SasuSync SMS API helper for MediMonitor.
+ * SasuSync SMS API helper for VitalX.
  *
  * Endpoint: POST https://sms.sasusync.com/api/v1/send
  * Header:   X-API-Key: <your key>
@@ -82,7 +82,7 @@ function buildFallbackMessage(patient, reading, location) {
     : "";
 
   return (
-    `[MediMonitor ${urgency}] ${patient.name} has an abnormal reading. ` +
+    `[VitalX ${urgency}] ${patient.name} has an abnormal reading. ` +
     `HR: ${reading.heartRate} bpm, SpO2: ${reading.spo2}%, ` +
     `Temp: ${(reading.temperature || 0).toFixed(1)}°C. ` +
     `Please seek medical attention immediately.` +
@@ -118,7 +118,7 @@ async function buildAIMessage(patient, reading, location, chatFn) {
       ? ` Location: https://maps.google.com/?q=${location.lat.toFixed(5)},${location.lng.toFixed(5)}`
       : "";
 
-    return `[MediMonitor] ${aiResponse.trim()}${locStr}`;
+    return `[VitalX] ${aiResponse.trim()}${locStr}`;
   } catch {
     return null; // Fall back to template
   }
@@ -173,7 +173,7 @@ export async function sendAlertSMS(patient, reading) {
   const emoji  = status === "CRITICAL" ? "URGENT" : "Warning";
 
   const message =
-    `[MediMonitor ${emoji}] Dear ${patient.name}, ` +
+    `[VitalX ${emoji}] Dear ${patient.name}, ` +
     `an abnormal vital sign has been detected. ` +
     `HR: ${reading.heartRate} bpm, SpO2: ${reading.spo2}%, ` +
     `Temp: ${(reading.temperature || 0).toFixed(1)}°C. ` +
@@ -189,7 +189,7 @@ export async function sendClinicianAlertSMS(clinicianPhone, patient, reading) {
   const status = (reading.status || "WARNING").toUpperCase();
 
   const message =
-    `[MediMonitor Alert] PATIENT: ${patient.name} (ID: ${patient.memberId || "N/A"}) ` +
+    `[VitalX Alert] PATIENT: ${patient.name} (ID: ${patient.memberId || "N/A"}) ` +
     `has a ${status} reading. ` +
     `HR: ${reading.heartRate} bpm, SpO2: ${reading.spo2}%, ` +
     `Temp: ${(reading.temperature || 0).toFixed(1)}°C. ` +
