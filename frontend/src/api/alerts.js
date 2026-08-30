@@ -1,4 +1,6 @@
 import { getAllReadings } from './readings';
+import { ref, get } from 'firebase/database';
+import { rtdb } from './firebase';
 
 /**
  * Derives a list of alerts from the most recent readings across all patients.
@@ -9,18 +11,37 @@ import { getAllReadings } from './readings';
 export async function getAlerts() {
   const allReadings = await getAllReadings(200);
   
+  // Build a cache of patient phone numbers so we don't fetch the same user twice
+  const phoneCache = {};
+  const getPatientPhone = async (patientId) => {
+    if (phoneCache[patientId] !== undefined) return phoneCache[patientId];
+    try {
+      const snap = await get(ref(rtdb, `users/${patientId}`));
+      const phone = snap.exists() ? (snap.val().phone || null) : null;
+      phoneCache[patientId] = phone;
+      return phone;
+    } catch {
+      phoneCache[patientId] = null;
+      return null;
+    }
+  };
+
   const alerts = [];
   for (const r of allReadings) {
     if (r.status === 'WARNING' || r.status === 'CRITICAL') {
+      const phone = await getPatientPhone(r.patientId);
       alerts.push({
         _id: r._id,
+        patientId: r.patientId,
         patientName: r.patientName || 'Unknown Patient',
         memberId: r.memberId || '—',
+        phone: phone || r.patientPhone || null,
         type: `Abnormal ${r.status === 'CRITICAL' ? 'SpO₂/HR' : 'Vitals'} Detected`,
         severity: r.status,
         status: 'unresolved', // Default for derived alerts
         hr: r.heartRate,
         spo2: r.spo2,
+        temp: r.temperature,
         createdAt: r.timestamp,
       });
     }
