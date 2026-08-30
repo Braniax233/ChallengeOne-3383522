@@ -11,7 +11,7 @@
 
 const SASUSYNC_API_KEY = "ss_ae1532ce19a2928d402d701b8477d688b05061109abdfe04bdf9481e108e69fa";
 const SASUSYNC_BASE    = "https://sms.sasusync.com/api/v1";
-const SENDER_ID        = "MediMonitor"; // The name recipients see on their phone
+const SENDER_ID        = "Vitalx"; // The name recipients see on their phone
 
 /**
  * Normalize a Ghanaian phone number to international format (233XXXXXXXXX).
