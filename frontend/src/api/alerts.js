@@ -11,17 +11,17 @@ import { rtdb } from './firebase';
 export async function getAlerts() {
   const allReadings = await getAllReadings(200);
   
-  // Build a cache of patient phone numbers so we don't fetch the same user twice
-  const phoneCache = {};
-  const getPatientPhone = async (patientId) => {
-    if (phoneCache[patientId] !== undefined) return phoneCache[patientId];
+  // Build a cache of patient profiles so we don't fetch the same user twice
+  const userCache = {};
+  const getPatientInfo = async (patientId) => {
+    if (userCache[patientId] !== undefined) return userCache[patientId];
     try {
       const snap = await get(ref(rtdb, `users/${patientId}`));
-      const phone = snap.exists() ? (snap.val().phone || null) : null;
-      phoneCache[patientId] = phone;
-      return phone;
+      const data = snap.exists() ? snap.val() : null;
+      userCache[patientId] = data;
+      return data;
     } catch {
-      phoneCache[patientId] = null;
+      userCache[patientId] = null;
       return null;
     }
   };
@@ -29,13 +29,14 @@ export async function getAlerts() {
   const alerts = [];
   for (const r of allReadings) {
     if (r.status === 'WARNING' || r.status === 'CRITICAL') {
-      const phone = await getPatientPhone(r.patientId);
+      const patient = await getPatientInfo(r.patientId);
+      
       alerts.push({
         _id: r._id,
         patientId: r.patientId,
-        patientName: r.patientName || 'Unknown Patient',
-        memberId: r.memberId || '—',
-        phone: phone || r.patientPhone || null,
+        patientName: patient?.name || r.patientName || 'Unknown Patient',
+        memberId: patient?.memberId || r.memberId || '—',
+        phone: patient?.phone || r.patientPhone || null,
         type: `Abnormal ${r.status === 'CRITICAL' ? 'SpO₂/HR' : 'Vitals'} Detected`,
         severity: r.status,
         status: 'unresolved', // Default for derived alerts
