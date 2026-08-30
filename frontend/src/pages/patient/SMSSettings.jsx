@@ -115,15 +115,32 @@ export default function SMSSettings() {
   };
 
   const handleTestSMS = async () => {
-    const phone = user?.phone;
-    if (!phone) {
-      setTestResult({ success: false, error: 'No phone number on your account. Update your profile first.' });
+    // Collect all recipient numbers
+    const recipients = [];
+    if (user?.phone) recipients.push(user.phone);
+    for (const c of settings?.contacts || []) {
+      if (c.phone) recipients.push(c.phone);
+    }
+
+    if (recipients.length === 0) {
+      setTestResult({ success: false, error: 'No phone numbers found. Update your profile or add an emergency contact.' });
       return;
     }
+
     setTestSending(true);
     setTestResult(null);
-    const result = await sendSMS(phone, `[MediMonitor Test] Hello ${user?.name || 'there'}! Your SMS alerts are working correctly. This is a test message from MediMonitor.`);
-    setTestResult(result);
+    const result = await sendSMS(recipients, `[MediMonitor Test] Hello ${user?.name || 'there'}! Your SMS alerts are working correctly. This is a test message from MediMonitor.`);
+    
+    // Customize success message based on how many were sent
+    if (result.success) {
+      const msg = recipients.length === 1 
+        ? `Test SMS sent successfully to ${recipients[0]}! Check your phone.`
+        : `Test SMS sent successfully to ${recipients.length} contacts! Check phones.`;
+      setTestResult({ success: true, message: msg });
+    } else {
+      setTestResult(result);
+    }
+    
     setTestSending(false);
     setTimeout(() => setTestResult(null), 8000);
   };
@@ -180,7 +197,7 @@ export default function SMSSettings() {
           {testResult.success ? <CheckCircle size={16} className="mt-0.5 flex-shrink-0" /> : <Send size={16} className="mt-0.5 flex-shrink-0" />}
           <div>
             {testResult.success
-              ? `Test SMS sent successfully to ${user?.phone}! Check your phone.`
+              ? testResult.message
               : `Failed: ${testResult.error}`}
           </div>
         </div>
