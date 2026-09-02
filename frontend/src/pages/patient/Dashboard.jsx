@@ -401,7 +401,7 @@ export default function PatientDashboard() {
                 <StatusBadge status={status} />
               </div>
               <div className="flex items-end gap-1 mb-3">
-                <p className="text-4xl font-bold text-gray-800 dark:text-gray-100 ">{latestTemp.toFixed(1)}</p>
+                <p className="text-4xl font-bold text-gray-800 dark:text-gray-100 ">{typeof latestTemp === 'number' ? latestTemp.toFixed(1) : latestTemp}</p>
                 <p className="text-sm text-gray-500 dark:text-gray-400 mb-1">°C</p>
               </div>
               <div className="h-12">
