@@ -97,17 +97,6 @@ const STATUS_BANNER = {
 
 
 
-const generateHistory = () =>
-  Array.from({ length: 12 }, (_, i) => ({
-    time: new Date(Date.now() - (11 - i) * 15 * 60000).toLocaleTimeString([], {
-      hour: "2-digit",
-      minute: "2-digit",
-    }),
-    spo2: 94 + Math.floor(Math.random() * 5),
-    hr: 68 + Math.floor(Math.random() * 20),
-    temp: 36.5 + (Math.random() * 0.8),
-  }));
-
 export default function PatientDashboard() {
   const { user } = useAuth();
   const navigate  = useNavigate();
@@ -115,9 +104,7 @@ export default function PatientDashboard() {
   const [patient,  setPatient]  = useState(null);
   const [readings, setReadings] = useState([]);
   const [loading,  setLoading]  = useState(true);
-  const [history,  setHistory]  = useState(() => generateHistory());
-
-  // Live sensor from RTDB /vitals/latest
+  const [history,  setHistory]  = useState([]);
   const [liveVitals,   setLiveVitals]   = useState(null);
   const [sensorOnline, setSensorOnline] = useState(false);
 
@@ -200,16 +187,16 @@ export default function PatientDashboard() {
             hr:   r.heartRate,
             temp: r.temperature || 36.5,
           }));
-          setHistory(hist.length > 0 ? hist : generateHistory());
+          setHistory(hist);
         }
       })
       .catch(() => {})
       .finally(() => setLoading(false));
   }, [user]);
 
-  const latestHr = patient?.latestReading?.hr ?? 72;
-  const latestSpo2 = patient?.latestReading?.spo2 ?? 98;
-  const latestTemp = patient?.latestReading?.temp ?? 36.5;
+  const latestHr = patient?.latestReading?.hr ?? "--";
+  const latestSpo2 = patient?.latestReading?.spo2 ?? "--";
+  const latestTemp = patient?.latestReading?.temp ?? "--";
   const status = (patient?.status ?? "NORMAL").toUpperCase();
   const banner = STATUS_BANNER[status] ?? STATUS_BANNER.NORMAL;
   const BannerIcon = banner.icon;

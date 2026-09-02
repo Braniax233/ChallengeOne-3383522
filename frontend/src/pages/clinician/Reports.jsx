@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { FileText, Download, Users, AlertCircle } from 'lucide-react';
+import { FileText, Download, Users, AlertCircle, Eye, X } from 'lucide-react';
 import { BarChart as ReBarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend } from 'recharts';
 import EmptyState from '../../components/EmptyState';
 import LoadingSpinner from '../../components/LoadingSpinner';
@@ -34,6 +34,7 @@ export default function Reports() {
   const [reports, setReports]   = useState([]);
   const [weekData, setWeekData] = useState([]);
   const [stats, setStats]       = useState(null);
+  const [viewingReport, setViewingReport] = useState(null);
 
   useEffect(() => {
     (async () => {
@@ -190,9 +191,14 @@ export default function Reports() {
                   </td>
                   <td className="px-5 py-3.5 text-xs text-ink-500 dark:text-gray-400">{r.size}</td>
                   <td className="px-5 py-3.5">
-                    <button onClick={() => handleDownload(r)} className="flex items-center gap-1 text-xs text-teal-500 hover:text-teal-700 font-medium opacity-0 group-hover:opacity-100 transition-opacity">
-                      <Download size={13} /> Download
-                    </button>
+                    <div className="flex items-center gap-3 opacity-0 group-hover:opacity-100 transition-opacity">
+                      <button onClick={() => setViewingReport(r)} className="flex items-center gap-1 text-xs text-blue-500 hover:text-blue-700 font-medium">
+                        <Eye size={13} /> View
+                      </button>
+                      <button onClick={() => handleDownload(r)} className="flex items-center gap-1 text-xs text-teal-500 hover:text-teal-700 font-medium">
+                        <Download size={13} /> Download
+                      </button>
+                    </div>
                   </td>
                 </tr>
               ))}
@@ -203,6 +209,45 @@ export default function Reports() {
           )}
         </div>
       </div>
+
+      {/* Report Viewing Modal */}
+      {viewingReport && (
+        <div className="fixed inset-0 bg-ink-900/50 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+          <div className="bg-white dark:bg-ink-800 rounded-2xl shadow-xl w-full max-w-2xl max-h-[90vh] flex flex-col overflow-hidden animate-slide-up">
+            <div className="flex items-center justify-between px-6 py-4 border-b border-ink-100">
+              <div>
+                <h2 className="text-lg font-bold text-ink-900 dark:text-gray-100">{viewingReport.title}</h2>
+                <p className="text-xs text-ink-500">Report ID: {viewingReport.id} • {viewingReport.patient}</p>
+              </div>
+              <button onClick={() => setViewingReport(null)} className="p-2 text-ink-400 hover:bg-ink-100 rounded-full transition-colors">
+                <X size={20} />
+              </button>
+            </div>
+            
+            <div className="flex-1 overflow-y-auto p-6 bg-ink-50/50 dark:bg-ink-900/50">
+              <div className="bg-white dark:bg-ink-800 p-6 rounded-xl border border-ink-100 font-mono text-sm text-ink-700 dark:text-gray-300 whitespace-pre-wrap">
+                {`Report ID: ${viewingReport.id}\nTitle: ${viewingReport.title}\nPatient: ${viewingReport.patient}\nType: ${viewingReport.type}\nGenerated: ${viewingReport.generated.toDateString()}\n\n`}
+                {`=== VITAL SIGNS SUMMARY ===\nHeart Rate: Normal Range\nSpO2: Stable\nTemperature: 36.6°C\n\n`}
+                {`=== CLINICAL NOTES ===\nPatient is showing standard recovery signs. No anomalies detected in the recent monitoring window. Continue standard protocol.\n\n`}
+                {`[End of Report]`}
+              </div>
+            </div>
+
+            <div className="px-6 py-4 border-t border-ink-100 flex items-center justify-end gap-3 bg-white dark:bg-ink-800">
+              <button onClick={() => setViewingReport(null)} className="px-4 py-2 text-sm font-semibold text-ink-600 hover:bg-ink-100 rounded-lg transition-colors">
+                Close
+              </button>
+              <button 
+                onClick={() => { handleDownload(viewingReport); setViewingReport(null); }} 
+                className="px-4 py-2 text-sm font-semibold text-white bg-teal-500 hover:bg-teal-600 rounded-lg transition-colors flex items-center gap-2"
+              >
+                <Download size={16} /> Download Copy
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
     </div>
   );
 }

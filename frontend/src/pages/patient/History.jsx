@@ -37,27 +37,6 @@ const normalizeReadings = (readings) =>
     status: r.status ?? "NORMAL",
   }));
 
-const generateMockReadings = (n = 40) =>
-  Array.from({ length: n }, (_, i) => {
-    const t = new Date(Date.now() - (n - 1 - i) * 45 * 60 * 1000);
-    const spo2 = 93 + Math.floor(Math.random() * 6);
-    const hr = 60 + Math.floor(Math.random() * 45);
-    return {
-      _id: String(i),
-      timestamp: t,
-      time: t.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }),
-      date: t.toLocaleDateString([], { month: "short", day: "numeric" }),
-      spo2,
-      hr,
-      status:
-        spo2 < 90 || hr > 120 || hr < 45
-          ? "CRITICAL"
-          : spo2 < 94 || hr > 100 || hr < 60
-            ? "WARNING"
-            : "NORMAL",
-    };
-  });
-
 const ChartTooltip = ({ active, payload, label }) => {
   if (!active || !payload?.length) return null;
   return (
@@ -86,7 +65,7 @@ export default function PatientHistory() {
 
     getReadings(user.uid, 50)
       .then((rds) => setReadings(normalizeReadings(rds)))
-      .catch(() => setReadings(generateMockReadings()))
+      .catch(() => setReadings([]))
       .finally(() => setLoading(false));
   }, [user]);
 
